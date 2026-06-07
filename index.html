@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fry's Shopper</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0f0d2a;--bg2:#1a1645;--surface:#1f1b4e;--surface2:#261f5e;
+  --border:#2e2870;--border-strong:#3d3690;
+  --text:#f0eeff;--muted:#9b96cc;--faint:#5c5899;
+  --orange:#C45C2A;--orange-light:#e8744a;--orange-bg:rgba(196,92,42,0.12);--orange-border:rgba(196,92,42,0.35);
+  --gold:#F9A01B;--gold-bg:rgba(249,160,27,0.12);--gold-border:rgba(249,160,27,0.3);
+  --green:#2a8c5e;--green-bg:rgba(42,140,94,0.15);--green-light:rgba(42,140,94,0.22);--green-border:rgba(42,140,94,0.4);
+  --purple-light:rgba(112,64,176,0.15);--purple-border:rgba(112,64,176,0.35);--purple:#9b6ee8;
+  --red-bg:rgba(180,40,40,0.15);
+}
+html,body{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
+.app{max-width:720px;margin:0 auto;padding:1.5rem 1rem 4rem;}
+
+/* header */
+.app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:12px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.chef-ogre{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--orange);flex-shrink:0;box-shadow:0 0 12px rgba(196,92,42,0.4);}
+.app-title{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:var(--text);letter-spacing:0.02em;line-height:1;}
+.app-title span{color:var(--orange);}
+.app-store{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;}
+.suns-badge{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--gold);background:var(--gold-bg);border:0.5px solid var(--gold-border);padding:3px 10px;border-radius:4px;letter-spacing:0.08em;white-space:nowrap;flex-shrink:0;}
+
+/* tabs */
+.tabs{display:flex;gap:0;margin-bottom:1.25rem;border:0.5px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--bg);}
+.tab{flex:1;padding:10px 0;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
+.tab:not(:last-child){border-right:0.5px solid var(--border-strong);}
+.tab.active{background:var(--surface);color:var(--text);font-weight:500;}
+.tab-count{display:inline-block;margin-left:4px;font-size:11px;background:var(--orange-bg);color:var(--orange-light);padding:1px 5px;border-radius:99px;font-family:'DM Mono',monospace;border:0.5px solid var(--orange-border);}
+
+/* panels */
+.panel{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;}
+.panel-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;}
+textarea{width:100%;resize:vertical;border:0.5px solid var(--border-strong);border-radius:7px;padding:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg2);line-height:1.7;}
+textarea::placeholder{color:var(--faint);}
+textarea:focus{outline:none;border-color:var(--orange);}
+input[type=text]{width:100%;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);}
+input[type=text]::placeholder{color:var(--faint);}
+input[type=text]:focus{outline:none;border-color:var(--orange);}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:0.5px solid var(--border-strong);border-radius:7px;background:transparent;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.12s;}
+.btn:hover{background:var(--surface2);border-color:var(--orange);}
+.btn:active{transform:scale(0.98);}
+.btn-primary{background:var(--orange);color:#fff;border-color:var(--orange);}
+.btn-primary:hover{background:var(--orange-light);border-color:var(--orange-light);}
+.btn-gold{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-border);}
+.btn-gold:hover{background:rgba(249,160,27,0.22);}
+.btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:520px){.two-col{grid-template-columns:1fr;}}
+
+/* dinner cards */
+.dinner-cards{display:flex;flex-direction:column;gap:10px;}
+.dinner-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:9px;overflow:hidden;transition:border-color 0.15s;}
+.dinner-card.expanded{border-color:var(--border-strong);}
+.dinner-card-header{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;}
+.dinner-card-header:hover{background:rgba(255,255,255,0.02);}
+.day-pill{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--gold);background:var(--gold-bg);border:0.5px solid var(--gold-border);padding:2px 8px;border-radius:4px;letter-spacing:0.06em;flex-shrink:0;width:36px;text-align:center;}
+.dinner-name-display{flex:1;font-size:13px;color:var(--text);}
+.dinner-name-display.empty{color:var(--faint);font-style:italic;}
+.dinner-source-badge{font-size:11px;font-family:'DM Mono',monospace;padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.source-url{background:var(--green-bg);color:#6ee8a8;border:0.5px solid var(--green-border);}
+.source-manual{background:var(--purple-light);color:var(--purple);border:0.5px solid var(--purple-border);}
+.source-ai{background:var(--orange-bg);color:var(--orange-light);border:0.5px solid var(--orange-border);}
+.chevron{color:var(--faint);font-size:12px;transition:transform 0.15s;flex-shrink:0;}
+.chevron.open{transform:rotate(180deg);}
+.dinner-card-body{display:none;padding:0 12px 12px;border-top:0.5px solid var(--border);}
+.dinner-card-body.open{display:block;}
+.field-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin:10px 0 5px;}
+.source-tabs{display:flex;gap:4px;margin:10px 0 8px;}
+.source-tab{padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.12s;}
+.source-tab.active-url{background:var(--green-bg);color:#6ee8a8;border-color:var(--green-border);}
+.source-tab.active-manual{background:var(--purple-light);color:var(--purple);border-color:var(--purple-border);}
+.source-tab.active-ai{background:var(--orange-bg);color:var(--orange-light);border-color:var(--orange-border);}
+.source-panel{display:none;}
+.source-panel.active{display:block;}
+
+/* sorted list */
+.aisle-header{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:10px 0 5px;border-bottom:0.5px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:8px;}
+.aisle-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sorted-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:14px;margin:2px 0;}
+.sorted-item.has-coupon{background:var(--green-light);border-left:2px solid var(--green);}
+.item-name{flex:1;color:var(--text);}
+.item-name.unmatched{color:var(--muted);font-style:italic;}
+.coupon-tag{font-size:11px;font-family:'DM Mono',monospace;color:#6ee8a8;background:var(--green-bg);border:0.5px solid var(--green-border);padding:2px 8px;border-radius:4px;white-space:nowrap;}
+.empty-state{color:var(--faint);font-size:14px;padding:1rem 0;text-align:center;}
+.sort-legend{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px;}
+.legend-swatch{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green-light);border-left:2px solid var(--green);vertical-align:middle;}
+
+/* print styles */
+@media print {
+  body{background:#fff;color:#000;}
+  .tabs,.btn-row,.app-header,.sort-legend{display:none!important;}
+  #tab-sort{display:block!important;}
+  #tab-menu,#tab-wallet,#tab-aisles{display:none!important;}
+  .panel{border:none;padding:0;}
+  #list-input{display:none;}
+  .aisle-header{color:#333;border-color:#ccc;}
+  .item-name{color:#000;}
+  .sorted-item.has-coupon{background:#e8f5e9;border-left:2px solid #2a8c5e;}
+  .coupon-tag{color:#2a8c5e;border:1px solid #2a8c5e;background:transparent;}
+}
+
+/* wallet */
+.upload-zone{border:1.5px dashed var(--border-strong);border-radius:8px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--bg2);}
+.upload-zone:hover{border-color:var(--orange);background:var(--orange-bg);}
+.upload-zone input{display:none;}
+.upload-label{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.upload-icon{font-size:22px;color:var(--faint);}
+.scanning-state{text-align:center;padding:1rem;color:var(--muted);font-size:13px;}
+.scan-result{background:var(--green-bg);border:0.5px solid var(--green-border);border-radius:8px;padding:1rem;font-size:13px;}
+.scan-field{display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid rgba(42,140,94,0.2);}
+.scan-field:last-child{border-bottom:none;}
+.scan-key{color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;}
+.scan-val{font-weight:500;color:var(--text);}
+.error-state{background:var(--red-bg);border:0.5px solid rgba(180,40,40,0.3);border-radius:8px;padding:1rem;font-size:13px;color:#ff9999;}
+.coupon-list{display:flex;flex-direction:column;gap:8px;}
+.coupon-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:12px;}
+.coupon-discount{font-size:15px;font-weight:500;font-family:'DM Mono',monospace;color:var(--gold);min-width:52px;}
+.coupon-info{flex:1;}
+.coupon-item-name{font-size:14px;font-weight:500;color:var(--text);}
+.coupon-meta{font-size:12px;color:var(--muted);}
+.coupon-delete{background:none;border:none;cursor:pointer;color:var(--faint);font-size:16px;padding:4px;}
+.coupon-delete:hover{color:#ff6b6b;}
+.no-coupons{color:var(--faint);font-size:14px;text-align:center;padding:1rem 0;}
+.expired-section{margin-top:1.25rem;}
+.expired-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;}
+.tombstone{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:12px;color:var(--muted);}
+.tombstone:last-child{border-bottom:none;}
+.tombstone-item{flex:1;}
+.tombstone-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);}
+.aisle-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px;}
+.aisle-row:last-child{border-bottom:none;}
+.aisle-num{width:28px;color:var(--faint);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0;}
+.aisle-name-col{width:160px;font-weight:500;color:var(--text);flex-shrink:0;display:flex;align-items:center;gap:5px;}
+.aisle-kw-col{flex:1;color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.draft-preview{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);max-height:200px;overflow-y:auto;line-height:1.9;}
+.draft-preview span{color:var(--text);}
+.generating-state{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px;}
+.draft-meal-header{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;margin-top:8px;margin-bottom:2px;}
+.draft-meal-header:first-child{margin-top:0;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app-header">
+    <div class="header-left">
+      <img class="chef-ogre" src="chef-ogre.png" alt="Chef Ogre" onerror="this.style.display='none'">
+      <div>
+        <div class="app-title">FRY'S <span>SHOPPER</span></div>
+        <div class="app-store">1935 N Stapley Dr · Mesa, AZ</div>
+      </div>
+    </div>
+    <div class="suns-badge">☀ SUNS EDITION</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('menu',this)">Dinner Menu</button>
+    <button class="tab" onclick="switchTab('sort',this)">Fry's Shopper</button>
+    <button class="tab" onclick="switchTab('wallet',this)">Coupons <span class="tab-count" id="coupon-count">0</span></button>
+    <button class="tab" onclick="switchTab('aisles',this)">Aisle Map</button>
+  </div>
+
+  <!-- DINNER MENU -->
+  <div id="tab-menu">
+    <div class="panel">
+      <div class="panel-label">This Week's Dinners</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">For each dinner, pick a source: paste a <span style="color:#6ee8a8;">recipe URL</span>, enter ingredients <span style="color:var(--purple);">manually</span>, or let <span style="color:var(--orange-light);">AI generate</span> a list from the meal name.</p>
+      <div class="dinner-cards" id="dinner-cards"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="generateDraft()"><i class="ti ti-sparkles"></i> Build grocery draft</button>
+        <button class="btn" onclick="saveMealPlan()"><i class="ti ti-device-floppy"></i> Save menu</button>
+        <button class="btn" onclick="clearMealPlan()"><i class="ti ti-x"></i> Clear all</button>
+      </div>
+    </div>
+    <div id="draft-panel" style="display:none;" class="panel">
+      <div class="panel-label">Draft ingredient list</div>
+      <div id="draft-content"></div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="sendToShopper()"><i class="ti ti-arrow-right"></i> Send to Fry's Shopper</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRYS SHOPPER -->
+  <div id="tab-sort" style="display:none;">
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-label">Your List</div>
+        <textarea id="list-input" style="height:160px;" placeholder="Items arrive from your dinner menu, or type manually — one per line"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="sortList()"><i class="ti ti-arrows-sort"></i> Sort by aisle</button>
+          <button class="btn" onclick="window.print()"><i class="ti ti-printer"></i> Print</button>
+          <button class="btn" onclick="clearList()"><i class="ti ti-x"></i> Clear</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-label">Sorted by Aisle</div>
+        <div id="sorted-output"><p class="empty-state">Enter items and sort</p></div>
+      </div>
+    </div>
+    <p class="sort-legend"><span class="legend-swatch"></span> Green highlight = coupon in your wallet</p>
+  </div>
+
+  <!-- WALLET -->
+  <div id="tab-wallet" style="display:none;">
+    <div class="panel">
+      <div class="panel-label">Add Coupon by Photo</div>
+      <div class="upload-zone" onclick="document.getElementById('coupon-img').click()">
+        <input type="file" id="coupon-img" accept="image/*" capture="environment" onchange="scanCoupon(this)">
+        <i class="ti ti-camera upload-icon"></i>
+        <div class="upload-label">Tap to take a photo or choose from your library</div>
+      </div>
+      <div id="scan-status" style="margin-top:10px;"></div>
+      <div id="scan-confirm" style="display:none;">
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="confirmCoupon()"><i class="ti ti-check"></i> Save coupon</button>
+          <button class="btn" onclick="dismissScan()"><i class="ti ti-x"></i> Discard</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-label">Active Coupons</div>
+      <div id="coupon-list-el"><p class="no-coupons">No active coupons saved</p></div>
+      <div id="expired-section" style="display:none;" class="expired-section">
+        <div class="expired-label">Recently Expired</div>
+        <div id="tombstone-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AISLES -->
+  <div id="tab-aisles" style="display:none;">
+    <div class="panel">
+      <div class="panel-label">Verified Aisle Map · 1935 N Stapley Dr</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">49 aisles verified in-store.</p>
+      <div id="aisle-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ──
+const SUPABASE_URL = 'https://xeuhnqwrhclyooeejtkx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWhucXdyaGNseW9vZWVqdGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3Nzk0MTYsImV4cCI6MjA5NjM1NTQxNn0.Ave8lPn0A3BpaGCNhInrrHTwIJBzaxyXbJFuaNYhD2M';
+const PROXY_URL = '/api/claude';
+
+// ── SUPABASE HELPERS ──
+async function sbFetch(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method==='POST'?'return=representation':''
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
+  if (!r.ok) throw new Error(await r.text());
+  const text = await r.text();
+  return text ? JSON.parse(text) : null;
+}
+
+// ── AISLE DATA ──
+const AISLES=[
+  {n:1,name:"Produce & Floral",color:"#639922",kw:["flower","rose","balloon","plant","vase","fresh fruit","fresh vegetable","strawberr","cherr","blueberr","raspberr","blackberr","pear","peach","plum","apple","watermelon","cantaloupe","cucumber","squash","pumpkin","cauliflower","bell pepper","jalapeno","jalapeño","lemon","lime","avocado","tomato","lettuce","romaine","kale","cabbage","onion","potato","carrot","salad mix","cilantro","parsley","thyme","basil","spinach","banana","pistachio","mushroom","scallion","zucchini","broccoli","grape","mango","artichoke","beet","radish","arugula","ginger","garlic","corn","asparagus","herb","produce","fresh"]},
+  {n:2,name:"Meat & Seafood",color:"#b03030",kw:["chicken breast","chicken thigh","chicken drum","chicken quarter","whole chicken","ground chicken","turkey breast","turkey leg","turkey quarter","ground turkey","bacon","ground pork","pork chop","pork rib","st. louis rib","baby back rib","pork shoulder","pork tenderloin","ham","bologna","lunchable","leg of lamb","lamb chop","beef","steak","filet mignon","beef tenderloin","new york strip","ribeye","t-bone","round steak","brisket","ground beef","hamburger","bison","salmon","ahi","mahi","pollock","tilapia","fresh shrimp","breakfast sausage","crab","lobster","meat","seafood","chicken","turkey","pork","fish"]},
+  {n:3,name:"Prepared Meats",color:"#b03030",kw:["ready-to-eat meat","deli meat","hot dog","bratwurst","polish sausage","sausage link","pepperoni stick"]},
+  {n:4,name:"Cold Beverages & Water",color:"#2a7ab5",kw:["cold beverage","single-serve","bottled water","seltzer","sparkling water","dasani","smartwater","perrier","lacroix"]},
+  {n:5,name:"Juice",color:"#e8911a",kw:["fruit juice","energy drink","bottled coffee","lemon juice","lime juice","cranberry juice","pineapple juice","apple juice","prune juice","gatorade","vegetable juice","tomato juice","orange juice","juice"]},
+  {n:6,name:"Soda",color:"#2a7ab5",kw:["pepsi","coke","dr pepper","dr. pepper","pop","soda","cola","root beer","sprite","mountain dew","7up","ginger ale"]},
+  {n:7,name:"Olive Bar & Cheese",color:"#c47a1a",kw:["charcuterie","loose olive","olive bar","cheese booth"]},
+  {n:8,name:"Alcohol",color:"#7040b0",kw:["beer","wine","spirits","bar mixer","coors","prosecco","champagne","chianti","vodka","bourbon","tequila","rum","gin","chardonnay","sam adams","kilt lifter","tonic water","club soda","liquor","liqueur","whiskey","booze","merlot","cabernet","pinot","ale","lager","ipa","hard cider","hard seltzer","white claw","truly"]},
+  {n:9,name:"Deli Counter",color:"#c47a1a",kw:["sliced deli","sliced turkey","sliced ham","sliced chicken","sliced cheese","cured meat","prosciutto","boar's head","boars head","feta","american cheese","gouda","parmesan wedge","salami log"]},
+  {n:10,name:"Prepared Food",color:"#c47a1a",kw:["hummus","potato salad","macaroni salad","fresh salsa","prepared food","deli salad","coleslaw"]},
+  {n:11,name:"Bakery",color:"#c47a1a",kw:["donut","cake","cookie","pie","dinner roll","challah","bagel","croissant","bollo roll","muffin","cinnamon roll","danish","cheesecake","ice cream cake","french bread","garlic bread","italian bread","bakery","pastry","bread loaf"]},
+  {n:12,name:"Solid Dairy & Cheese",color:"#2a7ab5",kw:["egg","butter","cheddar","swiss","provolone","havarti","jack cheese","mozzarella","queso fresco","cotija","oaxaca","raw tortilla","crema","shredded cheese","sliced cheese","sandwich cheese","ricotta","cream cheese","tofu","snacking cheese","babybel","laughing cow","string cheese","cheese block","cheese"]},
+  {n:13,name:"Yogurt & Dough",color:"#2a7ab5",kw:["yogurt","jell-o cup","pudding cup","pastry dough","biscuit dough","crescent roll","cinnamon roll dough","pie dough","cookie dough","raw dough"]},
+  {n:14,name:"Frozen Meat & Seafood",color:"#4488cc",kw:["frozen fish","frozen shrimp","frozen chicken","hamburger patty","veggie burger","frozen burger","turkey burger","chicken burger","frozen chicken wing","frozen chicken breast","chicken nugget","chicken tender","chicken strip","dino nug","fish stick","frozen meat","frozen seafood"]},
+  {n:15,name:"Ice Cream",color:"#4488cc",kw:["ice cream","chocolate syrup","cool whip","gelato","sorbet","ice cream carton","ice cream pint"]},
+  {n:16,name:"Frozen Treats",color:"#4488cc",kw:["frozen novelty","frozen pie","puff pastry","frozen fruit","frozen pie crust","popsicle","dessert bar","ice cream cone","chocolate shell","strawberry syrup","caramel topping","hot fudge","frozen treat"]},
+  {n:17,name:"Frozen Snacks",color:"#4488cc",kw:["corndog","egg roll","dumpling","gyoza","frozen burrito","frozen waffle","breakfast sandwich","pizza roll","hot pocket","frozen snack"]},
+  {n:18,name:"Frozen Pizza & Sides",color:"#4488cc",kw:["frozen pizza","french fries","curly fries","hashbrown","sweet potato fries","waffle fries","onion ring","tater tot","frozen tamale"]},
+  {n:19,name:"Frozen Veggies & Meals",color:"#4488cc",kw:["frozen lasagna","frozen skillet","meatball","frozen veggie","frozen vegetable","frozen pea","frozen corn","frozen spinach","frozen broccoli","frozen cauliflower","frozen butternut","frozen garlic bread","frozen pasta","frozen meal","lean cuisine","tv dinner"]},
+  {n:20,name:"Frozen Meals",color:"#4488cc",kw:["frozen single-serve","stouffer","hungry man","marie callender","frozen entree"]},
+  {n:21,name:"Bread",color:"#c47a1a",kw:["wheat bread","white bread","sandwich bread","multigrain","rye bread","hamburger bun","hot dog bun","english muffin","snack cake","bread","buns"]},
+  {n:22,name:"Condiments",color:"#7a7568",kw:["pickle","salad dressing","crouton","ketchup","catsup","yellow mustard","dijon mustard","spicy mustard","stoneground mustard","mayo","mayonnaise","ranch","italian dressing","blue cheese dressing","tartar sauce","cocktail sauce","chili sauce","barbecue sauce","bbq sauce","a1 sauce","tabasco","hot sauce","pickled pepper","relish","jarred pepper","olive","condiment","vinaigrette","caesar dressing","thousand island"]},
+  {n:23,name:"Dried Pasta & Sauce",color:"#7a7568",kw:["spaghetti","macaroni","fettuccin","linguini","linguine","angel hair","bowtie","penne","rigatoni","lasagna noodle","rotini","gnocchi","pasta sauce","alfredo","vodka sauce","marinara","grated parmesan","velveeta","nacho cheese sauce","pizza sauce","bacon bit","pasta","noodle","lasagna"]},
+  {n:24,name:"Rice, Beans & Asian",color:"#7a7568",kw:["boxed pasta dinner","rice","dried bean","buldak","ramen","rice noodle","vermicelli","dried seaweed","pocky","dumpling sauce","sweet and sour","teriyaki sauce","ponzu","soy sauce","sesame oil","miso","rice vinegar","mirin","curry paste","dried shiitake","kewpie","fish sauce","sriracha","chili crisp","ginger paste","garlic paste","wasabi","coconut milk","hominy","menudo","lentil","mac and cheese","suddenly salad","hamburger helper","quinoa","couscous","farro","barley","oat","grits","polenta"]},
+  {n:25,name:"Mexican & Seasonings",color:"#c45c8a",kw:["taco seasoning","gravy mix","jarred gravy","chili seasoning","stuffing","scalloped potato","dried mashed potato","mashed potato mix","canned green chili","jarred jalapeno","canned jalapeno","enchilada sauce","refried bean","taco shell","tajin","tortilla","salsa","taco","burrito","mexican","hispanic","latin"]},
+  {n:26,name:"Soup, Broth & Canned Meat",color:"#7a7568",kw:["broth","soup","tuna","sardine","smoked oyster","anchovy","canned clam","clam juice","spam","vienna sausage","sloppy joe","canned chili","spaghetti-o","chicken broth","beef broth","vegetable broth","stock","bone broth"]},
+  {n:27,name:"Canned Vegetables & Fruit",color:"#639922",kw:["canned tomato","canned bean","canned veggie","canned vegetable","canned corn","canned pumpkin","canned black bean","fruit cup","canned fruit","canned pea","canned green bean","canned chickpea","diced tomato","tomato paste","tomato sauce","crushed tomato","whole tomato","kidney bean","pinto bean"]},
+  {n:28,name:"Coffee & Tea",color:"#7a7568",kw:["coffee","tea","coffee filter","hot chocolate","espresso","creamer","k-cup","nespresso","instant coffee","green tea","herbal tea","chai","matcha"]},
+  {n:29,name:"Baking & Spices",color:"#7a7568",kw:["olive oil","vinegar","agave","bread crumb","spice","salt","seasoning","pepper","cumin","sugar","flour","artificial sweetener","powdered sugar","masa","corn meal","corn flour","bisquick","foil pan","garlic powder","onion powder","paprika","oregano","thyme","rosemary","cinnamon","nutmeg","turmeric","chili powder","bay leaf","red pepper flake","cayenne","italian seasoning","old bay","lemon pepper","cooking spray","oil","vegetable oil","canola oil","avocado oil","balsamic","apple cider vinegar","white vinegar","rice vinegar"]},
+  {n:30,name:"Baking Supplies",color:"#7a7568",kw:["chocolate chip","condensed milk","cake mix","gelatin","pudding mix","cake decorating","sprinkle","cookie icing","muffin mix","cornbread mix","jiffy","pecan","walnut","pine nut","evaporated milk","sweetened condensed milk","dulce de leche","yeast","powdered milk","maraschino","baking chip","cocoa powder","flaked coconut","shredded coconut","corn starch","molasses","marshmallow","corn syrup","pie filling","baking soda","baking powder","vanilla","extract","shortening"]},
+  {n:31,name:"Liquid Dairy",color:"#2a7ab5",kw:["milk","creamer","sour cream","cottage cheese","orange juice","half and half","heavy cream","almond milk","oat milk","soy milk","coconut milk carton","lactaid","dairy milk","2% milk","whole milk","skim milk"]},
+  {n:32,name:"Cereal & Breakfast",color:"#c47a1a",kw:["cereal","pancake mix","maple syrup","granola","dried fruit","oatmeal","instant oatmeal","cream of wheat"]},
+  {n:33,name:"Granola Bars & Spreads",color:"#c47a1a",kw:["peanut butter","jelly","jam","granola bar","pop tart","protein bar","energy bar","kind bar","clif bar","almond butter","hazelnut spread","nutella","honey","preserves","marmalade"]},
+  {n:34,name:"Packaged Snacks",color:"#c47a1a",kw:["applesauce","packaged cookie","packaged cracker","fruit snack","rice cake","pudding snack","snack pack"]},
+  {n:35,name:"Candy",color:"#c45c8a",kw:["candy","gummy","chocolate bar","m&m","skittles","starburst","twix","snickers","kit kat","reese","haribo","sour patch","jolly rancher","swedish fish","nerds","lifesaver","peppermint","hard candy","lollipop","caramel candy","gum","mints"]},
+  {n:36,name:"Cookies",color:"#c47a1a",kw:["cookies","graham cracker","oreo","chips ahoy","nutter butter","fig newton","pepperidge farm","milano","thin mint","sandwich cookie"]},
+  {n:37,name:"Crackers & Popcorn",color:"#c47a1a",kw:["cracker","popcorn","rice cracker","wheat thin","triscuit","ritz","town house","cheez-it","goldfish","pita chip","pringle"]},
+  {n:38,name:"Nuts & Jerky",color:"#c47a1a",kw:["snacking nut","almond","cashew","peanut","jerky","trail mix","slim jim","sunflower seed","mixed nut","macadamia","beef stick","meat stick"]},
+  {n:39,name:"Chips",color:"#c47a1a",kw:["chip","pretzel","chip dip","french onion dip","takis","popcorners","lay's","doritos","fritos","cheetos","funyun","tortilla chip","tostito","kettle chip","potato chip","corn chip","veggie chip","plantain chip"]},
+  {n:40,name:"Paper Goods",color:"#2d6a4f",kw:["toilet paper","paper towel","tissue","kleenex","bounty","charmin","scott","viva"]},
+  {n:41,name:"Pet Supplies",color:"#7a7568",kw:["cat food","cat litter","dog food","pet food","dog treat","cat treat","bird food","fish food","pet","kibble","fancy feast","purina","friskies","blue buffalo","pedigree","litter"]},
+  {n:42,name:"Kitchenware",color:"#2d6a4f",kw:["napkin","paper plate","paper bowl","disposable cup","disposable silverware","ziploc","zip lock","paraffin wax","aluminum foil","plastic wrap","charcoal","lighter fluid","freezer bag","storage bag","sandwich bag","cling wrap","parchment","wax paper","foil"]},
+  {n:43,name:"Cleaners",color:"#2d6a4f",kw:["trash bag","mop","broom","toilet cleaner","drano","clorox","lysol","cleanser","ajax","comet","pine sol","oven cleaner","car fluid","window washer","motor oil","pledge","windex"]},
+  {n:44,name:"Cleaning Products",color:"#2d6a4f",kw:["bleach","sponge","dishwasher tab","laundry detergent","dish soap","oxyclean","dryer sheet","fabric softener","tide","gain","arm & hammer","dawn","cascade","finish","bounce","downy","laundry","detergent"]},
+  {n:45,name:"Housewares",color:"#2d6a4f",kw:["light bulb","hanger","lint roller","command strip","caulk","glue","tape","outlet","extension cord","ac filter","toilet kit","drain plug","wd-40","wd40","batteries","lightbulb"]},
+  {n:46,name:"Hygiene",color:"#c45c8a",kw:["tampon","pad","toothpaste","toothbrush","floss","mouthwash","listerine","fluoride","lotion","sunscreen","body wash","shampoo","conditioner","deodorant","razor","hair dye","hair tie","hair clip","hair brush","comb","body lotion","chapstick","lip balm","cotton ball","cotton swab","q-tip","bar soap"]},
+  {n:47,name:"Vanity",color:"#c45c8a",kw:["face lotion","makeup","nail polish","nail polish remover","foundation","mascara","lipstick","eyeliner","eyeshadow","concealer","blush","setting spray","bb cream","toner","serum","face wash","moisturizer","skincare","face mask","eye cream"]},
+  {n:48,name:"First Aid & Medicine",color:"#2a7ab5",kw:["band-aid","bandage","allergy medicine","cold medicine","aspirin","ibuprofen","decongestant","cough drop","mucinex","chap stick","sleeping pill","tylenol","rubbing alcohol","hydrogen peroxide","medicine","advil","benadryl","zyrtec","claritin","nyquil","dayquil","robitussin","theraflu","pepto","alka seltzer","first aid","antibiotic ointment","neosporin","ace bandage","heating pad"]},
+  {n:49,name:"Digestion & Vitamins",color:"#2a7ab5",kw:["tums","vitamin","laxative","anti-diarrheal","imodium","probiotic","melatonin","fish oil","omega","zinc","magnesium","multivitamin","elderberry","supplement","collagen","protein powder","antacid","miralax","colace","gas-x","fiber","metamucil","centrum","one-a-day"]},
+];
+
+const DAYS=['Fri','Sat','Sun','Mon','Tue','Wed','Thu'];
+let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:''}));
+let coupons=[],tombstones=[],pendingCoupon=null,pendingDraft=[];
+
+function todayStr(){return new Date().toISOString().split('T')[0];}
+function daysSince(d){return Math.floor((new Date()-new Date(d+'T00:00:00'))/864e5);}
+
+// ── SUPABASE STORAGE ──
+async function loadFromSupabase(){
+  try{
+    const mp=await sbFetch('meal_plan?id=eq.1');
+    if(mp&&mp.length>0&&mp[0].meals) mealPlan=mp[0].meals;
+  }catch(e){console.log('No meal plan saved yet');}
+  try{
+    const cp=await sbFetch('coupons?order=id');
+    if(cp) coupons=cp.map(c=>({id:c.id,item:c.item,brand:c.brand,discount:c.discount,expiry:c.expiry}));
+  }catch(e){console.log('No coupons yet');}
+  try{
+    const tb=await sbFetch('tombstones?order=id');
+    if(tb) tombstones=tb.map(t=>({id:t.id,item:t.item,brand:t.brand,discount:t.discount,expiry:t.expiry,deletedOn:t.deleted_on,manualDelete:t.manual_delete}));
+  }catch(e){console.log('No tombstones yet');}
+  runMaintenance();
+  buildDinnerCards();
+  renderCoupons();
+  updateCouponCount();
+}
+
+async function saveMealPlanToDb(){
+  try{
+    await sbFetch('meal_plan?id=eq.1','DELETE');
+  }catch(e){}
+  try{
+    await sbFetch('meal_plan','POST',{id:1,meals:mealPlan,updated_at:new Date().toISOString()});
+  }catch(e){console.error('Save meal plan error',e);}
+}
+
+async function saveCouponToDb(c){
+  try{
+    await sbFetch('coupons','POST',{id:c.id,item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||''});
+  }catch(e){console.error('Save coupon error',e);}
+}
+
+async function deleteCouponFromDb(id){
+  try{await sbFetch('coupons?id=eq.'+id,'DELETE');}catch(e){}
+}
+
+async function saveTombstoneToDb(tb){
+  try{
+    await sbFetch('tombstones','POST',{id:tb.id,item:tb.item,brand:tb.brand||'',discount:tb.discount,expiry:tb.expiry||'',deleted_on:tb.deletedOn,manual_delete:tb.manualDelete||false});
+  }catch(e){console.error('Save tombstone error',e);}
+}
+
+async function deleteTombstoneFromDb(id){
+  try{await sbFetch('tombstones?id=eq.'+id,'DELETE');}catch(e){}
+}
+
+// ── MAINTENANCE ──
+function runMaintenance(){
+  const t=todayStr();
+  const still=[],expired=[];
+  for(const c of coupons){if(c.expiry&&c.expiry<t)expired.push(c);else still.push(c);}
+  coupons=still;
+  for(const c of expired){
+    const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry,deletedOn:t,id:Date.now()+Math.random(),manualDelete:false};
+    tombstones.push(tb);
+    deleteCouponFromDb(c.id);
+    saveTombstoneToDb(tb);
+  }
+  const toRemove=tombstones.filter(tb=>daysSince(tb.deletedOn)>=7);
+  tombstones=tombstones.filter(tb=>daysSince(tb.deletedOn)<7);
+  for(const tb of toRemove) deleteTombstoneFromDb(tb.id);
+}
+
+// ── DINNER CARDS ──
+function buildDinnerCards(){
+  const g=document.getElementById('dinner-cards');
+  g.innerHTML=DAYS.map((day,i)=>{
+    const m=mealPlan[i];
+    const badge=m.source==='url'&&m.url?'<span class="dinner-source-badge source-url">URL</span>':m.source==='manual'&&m.manualText?'<span class="dinner-source-badge source-manual">Manual</span>':m.name?'<span class="dinner-source-badge source-ai">AI</span>':'';
+    return`<div class="dinner-card" id="dc-${i}">
+      <div class="dinner-card-header" onclick="toggleCard(${i})">
+        <span class="day-pill">${day}</span>
+        <span class="dinner-name-display${m.name?'':' empty'}" id="dn-${i}">${esc(m.name||'No dinner set')}</span>
+        ${badge}
+        <span class="chevron" id="chev-${i}">▾</span>
+      </div>
+      <div class="dinner-card-body" id="db-${i}">
+        <div class="field-label">Dinner name</div>
+        <input type="text" id="meal-name-${i}" value="${esc(m.name)}" placeholder="e.g. Chicken tacos" oninput="updateName(${i},this.value)">
+        <div class="field-label">Ingredient source</div>
+        <div class="source-tabs">
+          <button class="source-tab${m.source==='url'?' active-url':''}" onclick="setSource(${i},'url',this)"><i class="ti ti-link"></i> Recipe URL</button>
+          <button class="source-tab${m.source==='manual'?' active-manual':''}" onclick="setSource(${i},'manual',this)"><i class="ti ti-pencil"></i> Manual</button>
+          <button class="source-tab${m.source==='ai'?' active-ai':''}" onclick="setSource(${i},'ai',this)"><i class="ti ti-sparkles"></i> AI generate</button>
+        </div>
+        <div class="source-panel${m.source==='url'?' active':''}" id="sp-url-${i}">
+          <input type="text" id="meal-url-${i}" value="${esc(m.url)}" placeholder="https://www.allrecipes.com/recipe/…" oninput="updateUrl(${i},this.value)">
+          <p style="font-size:11px;color:var(--faint);margin-top:6px;line-height:1.5;">Paste a recipe URL. Falls back to AI if the page can't be read.</p>
+        </div>
+        <div class="source-panel${m.source==='manual'?' active':''}" id="sp-manual-${i}">
+          <textarea style="height:90px;" id="meal-manual-${i}" placeholder="One ingredient per line" oninput="updateManual(${i},this.value)">${esc(m.manualText)}</textarea>
+        </div>
+        <div class="source-panel${m.source==='ai'?' active':''}" id="sp-ai-${i}">
+          <p style="font-size:12px;color:var(--muted);line-height:1.6;padding:4px 0;">Claude will generate a typical ingredient list for this meal when you click <strong style="color:var(--text)">Build grocery draft</strong>.</p>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(i){
+  const body=document.getElementById('db-'+i);
+  const chev=document.getElementById('chev-'+i);
+  const card=document.getElementById('dc-'+i);
+  const open=body.classList.toggle('open');
+  chev.classList.toggle('open',open);
+  card.classList.toggle('expanded',open);
+}
+function updateName(i,val){mealPlan[i].name=val;const el=document.getElementById('dn-'+i);el.textContent=val||'No dinner set';el.classList.toggle('empty',!val);}
+function updateUrl(i,val){mealPlan[i].url=val;}
+function updateManual(i,val){mealPlan[i].manualText=val;}
+function setSource(i,src,btn){
+  mealPlan[i].source=src;
+  btn.closest('.source-tabs').querySelectorAll('.source-tab').forEach(t=>t.className='source-tab');
+  btn.classList.add(src==='url'?'active-url':src==='manual'?'active-manual':'active-ai');
+  ['url','manual','ai'].forEach(s=>{const p=document.getElementById(`sp-${s}-${i}`);if(p)p.classList.toggle('active',s===src);});
+}
+
+async function saveMealPlan(){
+  DAYS.forEach((_,i)=>{
+    const n=document.getElementById('meal-name-'+i);const u=document.getElementById('meal-url-'+i);const m=document.getElementById('meal-manual-'+i);
+    if(n)mealPlan[i].name=n.value.trim();if(u)mealPlan[i].url=u.value.trim();if(m)mealPlan[i].manualText=m.value.trim();
+  });
+  await saveMealPlanToDb();
+  showToast('Menu saved ✓');
+}
+
+function clearMealPlan(){
+  mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:''}));
+  buildDinnerCards();
+  document.getElementById('draft-panel').style.display='none';
+}
+
+// ── CLAUDE API ──
+async function callClaude(messages, useWebSearch=false){
+  const body={model:'claude-sonnet-4-20250514',max_tokens:800,messages};
+  if(useWebSearch) body.tools=[{type:'web_search_20250305',name:'web_search'}];
+  const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const data=await resp.json();
+  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+}
+
+async function generateDraft(){
+  DAYS.forEach((_,i)=>{
+    const n=document.getElementById('meal-name-'+i);const u=document.getElementById('meal-url-'+i);const m=document.getElementById('meal-manual-'+i);
+    if(n)mealPlan[i].name=n.value.trim();if(u)mealPlan[i].url=u.value.trim();if(m)mealPlan[i].manualText=m.value.trim();
+  });
+  const active=mealPlan.filter(m=>m.name);
+  if(!active.length){showToast('Enter at least one dinner first');return;}
+  const dp=document.getElementById('draft-panel');const dc=document.getElementById('draft-content');
+  dp.style.display='';dc.innerHTML='<div class="generating-state"><i class="ti ti-loader"></i> Building ingredient list…</div>';
+  const allItems=[];let html='';
+  for(let i=0;i<mealPlan.length;i++){
+    const m=mealPlan[i];if(!m.name)continue;
+    const day=DAYS[i];let items=[],method='';
+    if(m.source==='manual'&&m.manualText.trim()){
+      items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);method='manual';
+    } else if(m.source==='url'&&m.url.trim()){
+      dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Fetching recipe for ${esc(m.name)}…</div>`;
+      try{
+        const text=await callClaude([{role:'user',content:`Fetch this recipe page and extract only the ingredient list: ${m.url}\n\nReturn ONLY a plain list of ingredients, one per line, generic names, no quantities, no brands, no instructions. If you cannot access the page, return exactly the word FAILED.`}],true);
+        if(!text||text==='FAILED'||text.length<10) throw new Error('fetch failed');
+        items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED');
+        method='url';
+      }catch(e){
+        items=await aiIngredients(m.name);method='ai-fallback';
+      }
+    } else {
+      dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Generating ingredients for ${esc(m.name)}…</div>`;
+      items=await aiIngredients(m.name);method='ai';
+    }
+    const badge=method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='ai-fallback'?'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI fallback</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI</span>';
+    allItems.push(...items);
+    html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(it)}</span><br>`).join('')}`;
+  }
+  const seen=new Set();
+  pendingDraft=allItems.filter(it=>{const k=it.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+  dc.innerHTML=`<div class="draft-preview">${html}</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">${pendingDraft.length} unique ingredients. Duplicates removed when sent to shopper.</p>`;
+}
+
+async function aiIngredients(mealName){
+  try{
+    const text=await callClaude([{role:'user',content:`List typical grocery store ingredients for: ${mealName}\nRules: one per line, generic names, no brands, no quantities, omit pantry staples (salt pepper basic oil). Return ONLY the ingredient list.`}]);
+    return text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);
+  }catch(e){return[];}
+}
+
+function sendToShopper(){
+  if(!pendingDraft.length){showToast('Generate a draft first');return;}
+  const existing=document.getElementById('list-input').value.trim();
+  document.getElementById('list-input').value=existing?existing+'\n'+pendingDraft.join('\n'):pendingDraft.join('\n');
+  switchTab('sort',document.querySelectorAll('.tab')[1]);
+  showToast('Draft sent — edit before sorting');
+}
+
+// ── SORT ──
+function matchAisle(item){const l=item.toLowerCase();for(const a of AISLES)for(const kw of a.kw)if(l.includes(kw))return a;return null;}
+function matchCoupon(item){const l=item.toLowerCase();return coupons.find(c=>l.includes(c.item.toLowerCase())||c.item.toLowerCase().includes(l.split(' ')[0]));}
+
+function sortList(){
+  const items=document.getElementById('list-input').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if(!items.length){document.getElementById('sorted-output').innerHTML='<p class="empty-state">No items entered.</p>';return;}
+  const matched=[],unmatched=[];
+  for(const item of items){const a=matchAisle(item);if(a)matched.push({item,aisle:a});else unmatched.push(item);}
+  matched.sort((a,b)=>a.aisle.n-b.aisle.n);
+  let html='',last=null;
+  for(const{item,aisle}of matched){
+    if(!last||last.name!==aisle.name){html+=`<div class="aisle-header"><span class="aisle-dot" style="background:${aisle.color}"></span>${String(aisle.n).padStart(2,'0')} · ${aisle.name}</div>`;last=aisle;}
+    const c=matchCoupon(item);
+    html+=`<div class="sorted-item${c?' has-coupon':''}"><span class="item-name">${esc(item)}</span>${c?`<span class="coupon-tag">${esc(c.discount)}</span>`:''}</div>`;
+  }
+  if(unmatched.length){
+    html+=`<div class="aisle-header"><span class="aisle-dot" style="background:var(--faint)"></span>— · Unrecognized</div>`;
+    for(const item of unmatched){const c=matchCoupon(item);html+=`<div class="sorted-item${c?' has-coupon':''}"><span class="item-name unmatched">${esc(item)}</span>${c?`<span class="coupon-tag">${esc(c.discount)}</span>`:''}</div>`;}
+  }
+  document.getElementById('sorted-output').innerHTML=html||'<p class="empty-state">Nothing matched.</p>';
+}
+function clearList(){document.getElementById('list-input').value='';document.getElementById('sorted-output').innerHTML='<p class="empty-state">Enter items and sort</p>';}
+
+// ── COUPONS ──
+async function scanCoupon(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const sEl=document.getElementById('scan-status'),cEl=document.getElementById('scan-confirm');
+  cEl.style.display='none';
+  sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading coupon…</div>';
+  try{
+    const b64=await fileToBase64(file);
+    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:400,
+      messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},
+        {type:'text',text:`Read this physical grocery coupon. Return ONLY valid JSON, no markdown:\n{"item":"generic item name","brand":"brand or empty string","discount":"as shown e.g. $1.00 off","expiry":"YYYY-MM-DD or empty string"}\nIf not a coupon: {"error":"not a coupon"}`}
+      ]}]
+    })});
+    const data=await resp.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(parsed.error){sEl.innerHTML=`<div class="error-state">${esc(parsed.error)} — please try another photo.</div>`;return;}
+    pendingCoupon=parsed;
+    sEl.innerHTML=`<div class="scan-result">
+      <div class="scan-field"><span class="scan-key">item</span><span class="scan-val">${esc(parsed.item)}</span></div>
+      ${parsed.brand?`<div class="scan-field"><span class="scan-key">brand</span><span class="scan-val">${esc(parsed.brand)}</span></div>`:''}
+      <div class="scan-field"><span class="scan-key">discount</span><span class="scan-val">${esc(parsed.discount)}</span></div>
+      ${parsed.expiry?`<div class="scan-field"><span class="scan-key">expires</span><span class="scan-val">${esc(parsed.expiry)}</span></div>`:''}
+    </div>`;
+    cEl.style.display='flex';
+  }catch(e){sEl.innerHTML='<div class="error-state">Could not read the coupon. Please try a clearer photo.</div>';}
+  input.value='';
+}
+
+async function confirmCoupon(){
+  if(!pendingCoupon)return;
+  const c={...pendingCoupon,id:Date.now()};
+  coupons.push(c);
+  await saveCouponToDb(c);
+  pendingCoupon=null;
+  document.getElementById('scan-status').innerHTML='';
+  document.getElementById('scan-confirm').style.display='none';
+  renderCoupons();updateCouponCount();
+}
+function dismissScan(){pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';}
+
+async function deleteCoupon(id){
+  const c=coupons.find(x=>x.id===id);
+  if(c){
+    const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||'',deletedOn:todayStr(),id:Date.now(),manualDelete:true};
+    tombstones.push(tb);
+    await saveTombstoneToDb(tb);
+  }
+  coupons=coupons.filter(x=>x.id!==id);
+  await deleteCouponFromDb(id);
+  renderCoupons();updateCouponCount();
+}
+
+function renderCoupons(){
+  const el=document.getElementById('coupon-list-el');
+  el.innerHTML=coupons.length?'<div class="coupon-list">'+coupons.map(c=>`
+    <div class="coupon-card">
+      <div class="coupon-discount">${esc(c.discount)}</div>
+      <div class="coupon-info">
+        <div class="coupon-item-name">${esc(c.item)}${c.brand?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.brand)}</span>`:''}</div>
+        <div class="coupon-meta">${c.expiry?'expires '+esc(c.expiry):'no expiry'}</div>
+      </div>
+      <button class="coupon-delete" onclick="deleteCoupon(${c.id})"><i class="ti ti-trash"></i></button>
+    </div>`).join('')+'</div>':'<p class="no-coupons">No active coupons saved</p>';
+  const expSec=document.getElementById('expired-section');
+  if(!tombstones.length){expSec.style.display='none';return;}
+  expSec.style.display='';
+  document.getElementById('tombstone-list').innerHTML=tombstones.slice().reverse().map(tb=>{
+    const age=daysSince(tb.deletedOn);
+    const al=age===0?'today':age===1?'yesterday':`${age}d ago`;
+    return`<div class="tombstone"><span class="tombstone-item">${esc(tb.item)}${tb.brand?' · '+esc(tb.brand):''} <span style="color:var(--faint)">${esc(tb.discount)}</span></span><span class="tombstone-meta">${tb.manualDelete?'removed':'expired'} · deleted ${al}</span></div>`;
+  }).join('');
+}
+function updateCouponCount(){document.getElementById('coupon-count').textContent=coupons.length;}
+
+// ── TABS ──
+function switchTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  ['menu','sort','wallet','aisles'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  if(tab==='aisles')renderAisleList();
+}
+function renderAisleList(){
+  document.getElementById('aisle-list').innerHTML=AISLES.map(a=>`
+    <div class="aisle-row">
+      <span class="aisle-num">${String(a.n).padStart(2,'0')}</span>
+      <span class="aisle-name-col"><span style="width:7px;height:7px;border-radius:50%;background:${a.color};flex-shrink:0;display:inline-block;"></span>${a.name}</span>
+      <span class="aisle-kw-col">${a.kw.slice(0,5).join(', ')}…</span>
+    </div>`).join('');
+}
+
+// ── UTILS ──
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--surface2);color:var(--text);border:0.5px solid var(--border-strong);border-radius:8px;padding:8px 18px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.2s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2400);
+}
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('fail'));r.readAsDataURL(file);});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+loadFromSupabase();
+</script>
+</body>
+</html>
