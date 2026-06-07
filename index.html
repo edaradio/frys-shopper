@@ -21,7 +21,6 @@
 html,body{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);}
 .app{max-width:720px;margin:0 auto;padding:1.5rem 1rem 4rem;}
 
-/* header */
 .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;gap:12px;}
 .header-left{display:flex;align-items:center;gap:12px;}
 .chef-ogre{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--orange);flex-shrink:0;box-shadow:0 0 12px rgba(196,92,42,0.4);}
@@ -30,14 +29,12 @@ html,body{min-height:100vh;background:var(--bg);font-family:'DM Sans',sans-serif
 .app-store{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:4px;}
 .suns-badge{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--gold);background:var(--gold-bg);border:0.5px solid var(--gold-border);padding:3px 10px;border-radius:4px;letter-spacing:0.08em;white-space:nowrap;flex-shrink:0;}
 
-/* tabs */
 .tabs{display:flex;gap:0;margin-bottom:1.25rem;border:0.5px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--bg);}
-.tab{flex:1;padding:10px 0;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
+.tab{flex:1;padding:9px 0;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.15s;}
 .tab:not(:last-child){border-right:0.5px solid var(--border-strong);}
 .tab.active{background:var(--surface);color:var(--text);font-weight:500;}
-.tab-count{display:inline-block;margin-left:4px;font-size:11px;background:var(--orange-bg);color:var(--orange-light);padding:1px 5px;border-radius:99px;font-family:'DM Mono',monospace;border:0.5px solid var(--orange-border);}
+.tab-count{display:inline-block;margin-left:3px;font-size:10px;background:var(--orange-bg);color:var(--orange-light);padding:1px 4px;border-radius:99px;font-family:'DM Mono',monospace;border:0.5px solid var(--orange-border);}
 
-/* panels */
 .panel{background:var(--surface);border:0.5px solid var(--border);border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem;}
 .panel-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;}
 textarea{width:100%;resize:vertical;border:0.5px solid var(--border-strong);border-radius:7px;padding:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg2);line-height:1.7;}
@@ -53,6 +50,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .btn-primary:hover{background:var(--orange-light);border-color:var(--orange-light);}
 .btn-gold{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-border);}
 .btn-gold:hover{background:rgba(249,160,27,0.22);}
+.btn-sm{padding:4px 9px;font-size:12px;}
 .btn-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 @media(max-width:520px){.two-col{grid-template-columns:1fr;}}
@@ -70,18 +68,34 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .source-url{background:var(--green-bg);color:#6ee8a8;border:0.5px solid var(--green-border);}
 .source-manual{background:var(--purple-light);color:var(--purple);border:0.5px solid var(--purple-border);}
 .source-ai{background:var(--orange-bg);color:var(--orange-light);border:0.5px solid var(--orange-border);}
+.source-recipe{background:var(--gold-bg);color:var(--gold);border:0.5px solid var(--gold-border);}
 .chevron{color:var(--faint);font-size:12px;transition:transform 0.15s;flex-shrink:0;}
 .chevron.open{transform:rotate(180deg);}
 .dinner-card-body{display:none;padding:0 12px 12px;border-top:0.5px solid var(--border);}
 .dinner-card-body.open{display:block;}
 .field-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin:10px 0 5px;}
-.source-tabs{display:flex;gap:4px;margin:10px 0 8px;}
+.source-tabs{display:flex;gap:4px;margin:10px 0 8px;flex-wrap:wrap;}
 .source-tab{padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;border:0.5px solid var(--border-strong);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;transition:all 0.12s;}
 .source-tab.active-url{background:var(--green-bg);color:#6ee8a8;border-color:var(--green-border);}
 .source-tab.active-manual{background:var(--purple-light);color:var(--purple);border-color:var(--purple-border);}
 .source-tab.active-ai{background:var(--orange-bg);color:var(--orange-light);border-color:var(--orange-border);}
+.source-tab.active-recipe{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-border);}
 .source-panel{display:none;}
 .source-panel.active{display:block;}
+.recipe-search-box{position:relative;}
+.recipe-search-input{width:100%;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);}
+.recipe-search-input:focus{outline:none;border-color:var(--gold);}
+.recipe-search-input::placeholder{color:var(--faint);}
+.recipe-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:0.5px solid var(--border-strong);border-radius:0 0 7px 7px;max-height:180px;overflow-y:auto;z-index:100;display:none;}
+.recipe-dropdown.open{display:block;}
+.recipe-option{padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text);border-bottom:0.5px solid var(--border);}
+.recipe-option:last-child{border-bottom:none;}
+.recipe-option:hover{background:var(--surface);}
+.recipe-option-name{font-weight:500;}
+.recipe-option-count{font-size:11px;color:var(--muted);margin-left:6px;}
+.selected-recipe-card{background:var(--gold-bg);border:0.5px solid var(--gold-border);border-radius:7px;padding:8px 12px;font-size:13px;margin-top:6px;display:flex;align-items:center;justify-content:space-between;}
+.selected-recipe-name{color:var(--gold);font-weight:500;}
+.selected-recipe-count{font-size:11px;color:var(--muted);}
 
 /* sorted list */
 .aisle-header{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:10px 0 5px;border-bottom:0.5px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:8px;}
@@ -95,21 +109,22 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .sort-legend{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px;}
 .legend-swatch{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green-light);border-left:2px solid var(--green);vertical-align:middle;}
 
-/* print styles */
-@media print {
-  body{background:#fff;color:#000;}
-  .tabs,.btn-row,.app-header,.sort-legend{display:none!important;}
-  #tab-sort{display:block!important;}
-  #tab-menu,#tab-wallet,#tab-aisles{display:none!important;}
-  .panel{border:none;padding:0;}
-  #list-input{display:none;}
-  .aisle-header{color:#333;border-color:#ccc;}
-  .item-name{color:#000;}
-  .sorted-item.has-coupon{background:#e8f5e9;border-left:2px solid #2a8c5e;}
-  .coupon-tag{color:#2a8c5e;border:1px solid #2a8c5e;background:transparent;}
-}
+/* recipe cards */
+.recipe-card-list{display:flex;flex-direction:column;gap:10px;}
+.recipe-card-item{background:var(--bg2);border:0.5px solid var(--border);border-radius:9px;overflow:hidden;}
+.recipe-card-item.expanded{border-color:var(--border-strong);}
+.recipe-card-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;}
+.recipe-card-header:hover{background:rgba(255,255,255,0.02);}
+.recipe-card-name{flex:1;font-size:14px;font-weight:500;color:var(--text);}
+.recipe-card-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
+.recipe-card-body{display:none;padding:0 14px 14px;border-top:0.5px solid var(--border);}
+.recipe-card-body.open{display:block;}
+.recipe-ingredient-list{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
+.recipe-ingredient{font-size:13px;color:var(--text);padding:3px 0;border-bottom:0.5px solid var(--border);}
+.recipe-ingredient:last-child{border-bottom:none;}
+.no-recipes{color:var(--faint);font-size:14px;text-align:center;padding:1.5rem 0;}
 
-/* wallet */
+/* wallet / coupon */
 .upload-zone{border:1.5px dashed var(--border-strong);border-radius:8px;padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.15s;background:var(--bg2);}
 .upload-zone:hover{border-color:var(--orange);background:var(--orange-bg);}
 .upload-zone input{display:none;}
@@ -147,6 +162,19 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .generating-state{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px;}
 .draft-meal-header{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:0.07em;margin-top:8px;margin-bottom:2px;}
 .draft-meal-header:first-child{margin-top:0;}
+
+@media print{
+  body{background:#fff;color:#000;}
+  .tabs,.btn-row,.app-header,.sort-legend{display:none!important;}
+  #tab-sort{display:block!important;}
+  #tab-menu,#tab-wallet,#tab-aisles,#tab-recipes{display:none!important;}
+  .panel{border:none;padding:0;}
+  #list-input{display:none;}
+  .aisle-header{color:#333;border-color:#ccc;}
+  .item-name{color:#000;}
+  .sorted-item.has-coupon{background:#e8f5e9;border-left:2px solid #2a8c5e;}
+  .coupon-tag{color:#2a8c5e;border:1px solid #2a8c5e;background:transparent;}
+}
 </style>
 </head>
 <body>
@@ -165,6 +193,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <div class="tabs">
     <button class="tab active" onclick="switchTab('menu',this)">Dinner Menu</button>
     <button class="tab" onclick="switchTab('sort',this)">Fry's Shopper</button>
+    <button class="tab" onclick="switchTab('recipes',this)">Recipe Cards <span class="tab-count" id="recipe-count">0</span></button>
     <button class="tab" onclick="switchTab('wallet',this)">Coupons <span class="tab-count" id="coupon-count">0</span></button>
     <button class="tab" onclick="switchTab('aisles',this)">Aisle Map</button>
   </div>
@@ -173,7 +202,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <div id="tab-menu">
     <div class="panel">
       <div class="panel-label">This Week's Dinners</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">For each dinner, pick a source: paste a <span style="color:#6ee8a8;">recipe URL</span>, enter ingredients <span style="color:var(--purple);">manually</span>, or let <span style="color:var(--orange-light);">AI generate</span> a list from the meal name.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">For each dinner, pick a source: a saved <span style="color:var(--gold);">recipe card</span>, a <span style="color:#6ee8a8;">recipe URL</span>, <span style="color:var(--purple);">manual</span> entry, or <span style="color:var(--orange-light);">AI generate</span>.</p>
       <div class="dinner-cards" id="dinner-cards"></div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="generateDraft()"><i class="ti ti-sparkles"></i> Build grocery draft</button>
@@ -208,6 +237,53 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
       </div>
     </div>
     <p class="sort-legend"><span class="legend-swatch"></span> Green highlight = coupon in your wallet</p>
+  </div>
+
+  <!-- RECIPE CARDS -->
+  <div id="tab-recipes" style="display:none;">
+    <div class="panel">
+      <div class="panel-label">Add Recipe Card</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="btn btn-primary" onclick="showRecipeForm('manual')"><i class="ti ti-pencil"></i> Type manually</button>
+        <button class="btn" onclick="showRecipeForm('scan')"><i class="ti ti-camera"></i> Scan recipe card</button>
+      </div>
+
+      <!-- manual form -->
+      <div id="recipe-manual-form" style="display:none;">
+        <div class="field-label">Recipe name</div>
+        <input type="text" id="new-recipe-name" placeholder="e.g. Chicken Tacos" style="margin-bottom:8px;">
+        <div class="field-label">Ingredients (one per line)</div>
+        <textarea id="new-recipe-ingredients" style="height:120px;" placeholder="chicken breast&#10;black beans&#10;shredded cheese&#10;salsa&#10;flour tortillas"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="saveManualRecipe()"><i class="ti ti-check"></i> Save recipe card</button>
+          <button class="btn" onclick="hideRecipeForm()"><i class="ti ti-x"></i> Cancel</button>
+        </div>
+      </div>
+
+      <!-- scan form -->
+      <div id="recipe-scan-form" style="display:none;">
+        <div class="upload-zone" onclick="document.getElementById('recipe-img').click()">
+          <input type="file" id="recipe-img" accept="image/*" capture="environment" onchange="scanRecipeCard(this)">
+          <i class="ti ti-camera upload-icon"></i>
+          <div class="upload-label">Tap to photograph a recipe card or handwritten recipe</div>
+        </div>
+        <div id="recipe-scan-status" style="margin-top:10px;"></div>
+        <div id="recipe-scan-confirm" style="display:none;">
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="confirmRecipeScan()"><i class="ti ti-check"></i> Save recipe card</button>
+            <button class="btn" onclick="dismissRecipeScan()"><i class="ti ti-x"></i> Discard</button>
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top:8px;">
+          <button class="btn btn-sm" onclick="hideRecipeForm()"><i class="ti ti-x"></i> Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">Saved Recipe Cards</div>
+      <div id="recipe-card-list"><p class="no-recipes">No recipe cards saved yet</p></div>
+    </div>
   </div>
 
   <!-- WALLET -->
@@ -248,30 +324,18 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 </div>
 
 <script>
-// ── CONFIG ──
-const SUPABASE_URL = 'https://xeuhnqwrhclyooeejtkx.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWhucXdyaGNseW9vZWVqdGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3Nzk0MTYsImV4cCI6MjA5NjM1NTQxNn0.Ave8lPn0A3BpaGCNhInrrHTwIJBzaxyXbJFuaNYhD2M';
-const PROXY_URL = '/api/claude';
+const SUPABASE_URL='https://xeuhnqwrhclyooeejtkx.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhldWhucXdyaGNseW9vZWVqdGt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3Nzk0MTYsImV4cCI6MjA5NjM1NTQxNn0.Ave8lPn0A3BpaGCNhInrrHTwIJBzaxyXbJFuaNYhD2M';
+const PROXY_URL='/api/claude';
 
-// ── SUPABASE HELPERS ──
-async function sbFetch(path, method='GET', body=null) {
-  const opts = {
-    method,
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': method==='POST'?'return=representation':''
-    }
-  };
-  if (body) opts.body = JSON.stringify(body);
-  const r = await fetch(SUPABASE_URL + '/rest/v1/' + path, opts);
-  if (!r.ok) throw new Error(await r.text());
-  const text = await r.text();
-  return text ? JSON.parse(text) : null;
+async function sbFetch(path,method='GET',body=null){
+  const opts={method,headers:{'apikey':SUPABASE_ANON_KEY,'Authorization':'Bearer '+SUPABASE_ANON_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(SUPABASE_URL+'/rest/v1/'+path,opts);
+  if(!r.ok)throw new Error(await r.text());
+  const t=await r.text();return t?JSON.parse(t):null;
 }
 
-// ── AISLE DATA ──
 const AISLES=[
   {n:1,name:"Produce & Floral",color:"#639922",kw:["flower","rose","balloon","plant","vase","fresh fruit","fresh vegetable","strawberr","cherr","blueberr","raspberr","blackberr","pear","peach","plum","apple","watermelon","cantaloupe","cucumber","squash","pumpkin","cauliflower","bell pepper","jalapeno","jalapeño","lemon","lime","avocado","tomato","lettuce","romaine","kale","cabbage","onion","potato","carrot","salad mix","cilantro","parsley","thyme","basil","spinach","banana","pistachio","mushroom","scallion","zucchini","broccoli","grape","mango","artichoke","beet","radish","arugula","ginger","garlic","corn","asparagus","herb","produce","fresh"]},
   {n:2,name:"Meat & Seafood",color:"#b03030",kw:["chicken breast","chicken thigh","chicken drum","chicken quarter","whole chicken","ground chicken","turkey breast","turkey leg","turkey quarter","ground turkey","bacon","ground pork","pork chop","pork rib","st. louis rib","baby back rib","pork shoulder","pork tenderloin","ham","bologna","lunchable","leg of lamb","lamb chop","beef","steak","filet mignon","beef tenderloin","new york strip","ribeye","t-bone","round steak","brisket","ground beef","hamburger","bison","salmon","ahi","mahi","pollock","tilapia","fresh shrimp","breakfast sausage","crab","lobster","meat","seafood","chicken","turkey","pork","fish"]},
@@ -325,84 +389,166 @@ const AISLES=[
 ];
 
 const DAYS=['Fri','Sat','Sun','Mon','Tue','Wed','Thu'];
-let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:''}));
-let coupons=[],tombstones=[],pendingCoupon=null,pendingDraft=[];
+let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeId:null}));
+let coupons=[],tombstones=[],recipeCards=[],pendingCoupon=null,pendingDraft=[],pendingRecipeScan=null;
 
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function daysSince(d){return Math.floor((new Date()-new Date(d+'T00:00:00'))/864e5);}
 
-// ── SUPABASE STORAGE ──
+// ── SUPABASE ──
 async function loadFromSupabase(){
-  try{
-    const mp=await sbFetch('meal_plan?id=eq.1');
-    if(mp&&mp.length>0&&mp[0].meals) mealPlan=mp[0].meals;
-  }catch(e){console.log('No meal plan saved yet');}
-  try{
-    const cp=await sbFetch('coupons?order=id');
-    if(cp) coupons=cp.map(c=>({id:c.id,item:c.item,brand:c.brand,discount:c.discount,expiry:c.expiry}));
-  }catch(e){console.log('No coupons yet');}
-  try{
-    const tb=await sbFetch('tombstones?order=id');
-    if(tb) tombstones=tb.map(t=>({id:t.id,item:t.item,brand:t.brand,discount:t.discount,expiry:t.expiry,deletedOn:t.deleted_on,manualDelete:t.manual_delete}));
-  }catch(e){console.log('No tombstones yet');}
+  try{const mp=await sbFetch('meal_plan?id=eq.1');if(mp&&mp.length>0&&mp[0].meals)mealPlan=mp[0].meals.map(m=>({name:'',source:'ai',url:'',manualText:'',recipeId:null,...m}));}catch(e){}
+  try{const cp=await sbFetch('coupons?order=id');if(cp)coupons=cp.map(c=>({id:c.id,item:c.item,brand:c.brand,discount:c.discount,expiry:c.expiry}));}catch(e){}
+  try{const tb=await sbFetch('tombstones?order=id');if(tb)tombstones=tb.map(t=>({id:t.id,item:t.item,brand:t.brand,discount:t.discount,expiry:t.expiry,deletedOn:t.deleted_on,manualDelete:t.manual_delete}));}catch(e){}
+  try{const rc=await sbFetch('recipe_cards?order=id');if(rc)recipeCards=rc.map(r=>({id:r.id,name:r.name,ingredients:r.ingredients}));}catch(e){}
   runMaintenance();
   buildDinnerCards();
   renderCoupons();
+  renderRecipeCards();
   updateCouponCount();
+  updateRecipeCount();
 }
 
 async function saveMealPlanToDb(){
-  try{
-    await sbFetch('meal_plan?id=eq.1','DELETE');
-  }catch(e){}
-  try{
-    await sbFetch('meal_plan','POST',{id:1,meals:mealPlan,updated_at:new Date().toISOString()});
-  }catch(e){console.error('Save meal plan error',e);}
+  try{await sbFetch('meal_plan?id=eq.1','DELETE');}catch(e){}
+  try{await sbFetch('meal_plan','POST',{id:1,meals:mealPlan,updated_at:new Date().toISOString()});}catch(e){console.error(e);}
 }
+async function saveCouponToDb(c){try{await sbFetch('coupons','POST',{id:c.id,item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||''});}catch(e){}}
+async function deleteCouponFromDb(id){try{await sbFetch('coupons?id=eq.'+id,'DELETE');}catch(e){}}
+async function saveTombstoneToDb(tb){try{await sbFetch('tombstones','POST',{id:tb.id,item:tb.item,brand:tb.brand||'',discount:tb.discount,expiry:tb.expiry||'',deleted_on:tb.deletedOn,manual_delete:tb.manualDelete||false});}catch(e){}}
+async function deleteTombstoneFromDb(id){try{await sbFetch('tombstones?id=eq.'+id,'DELETE');}catch(e){}}
+async function saveRecipeCardToDb(r){try{await sbFetch('recipe_cards','POST',{id:r.id,name:r.name,ingredients:r.ingredients});}catch(e){console.error(e);}}
+async function deleteRecipeCardFromDb(id){try{await sbFetch('recipe_cards?id=eq.'+id,'DELETE');}catch(e){}}
 
-async function saveCouponToDb(c){
-  try{
-    await sbFetch('coupons','POST',{id:c.id,item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||''});
-  }catch(e){console.error('Save coupon error',e);}
-}
-
-async function deleteCouponFromDb(id){
-  try{await sbFetch('coupons?id=eq.'+id,'DELETE');}catch(e){}
-}
-
-async function saveTombstoneToDb(tb){
-  try{
-    await sbFetch('tombstones','POST',{id:tb.id,item:tb.item,brand:tb.brand||'',discount:tb.discount,expiry:tb.expiry||'',deleted_on:tb.deletedOn,manual_delete:tb.manualDelete||false});
-  }catch(e){console.error('Save tombstone error',e);}
-}
-
-async function deleteTombstoneFromDb(id){
-  try{await sbFetch('tombstones?id=eq.'+id,'DELETE');}catch(e){}
-}
-
-// ── MAINTENANCE ──
 function runMaintenance(){
-  const t=todayStr();
-  const still=[],expired=[];
+  const t=todayStr();const still=[],expired=[];
   for(const c of coupons){if(c.expiry&&c.expiry<t)expired.push(c);else still.push(c);}
   coupons=still;
-  for(const c of expired){
-    const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry,deletedOn:t,id:Date.now()+Math.random(),manualDelete:false};
-    tombstones.push(tb);
-    deleteCouponFromDb(c.id);
-    saveTombstoneToDb(tb);
-  }
+  for(const c of expired){const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry,deletedOn:t,id:Date.now()+Math.random(),manualDelete:false};tombstones.push(tb);deleteCouponFromDb(c.id);saveTombstoneToDb(tb);}
   const toRemove=tombstones.filter(tb=>daysSince(tb.deletedOn)>=7);
   tombstones=tombstones.filter(tb=>daysSince(tb.deletedOn)<7);
-  for(const tb of toRemove) deleteTombstoneFromDb(tb.id);
+  for(const tb of toRemove)deleteTombstoneFromDb(tb.id);
 }
+
+// ── RECIPE CARDS ──
+function showRecipeForm(type){
+  document.getElementById('recipe-manual-form').style.display=type==='manual'?'block':'none';
+  document.getElementById('recipe-scan-form').style.display=type==='scan'?'block':'none';
+}
+function hideRecipeForm(){
+  document.getElementById('recipe-manual-form').style.display='none';
+  document.getElementById('recipe-scan-form').style.display='none';
+  document.getElementById('new-recipe-name').value='';
+  document.getElementById('new-recipe-ingredients').value='';
+  document.getElementById('recipe-scan-status').innerHTML='';
+  document.getElementById('recipe-scan-confirm').style.display='none';
+  pendingRecipeScan=null;
+}
+
+async function saveManualRecipe(){
+  const name=document.getElementById('new-recipe-name').value.trim();
+  const raw=document.getElementById('new-recipe-ingredients').value.trim();
+  if(!name){showToast('Enter a recipe name');return;}
+  if(!raw){showToast('Enter at least one ingredient');return;}
+  const ingredients=raw.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);
+  const r={id:Date.now(),name,ingredients};
+  recipeCards.push(r);
+  await saveRecipeCardToDb(r);
+  hideRecipeForm();
+  renderRecipeCards();
+  updateRecipeCount();
+  showToast('Recipe card saved ✓');
+}
+
+async function scanRecipeCard(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const sEl=document.getElementById('recipe-scan-status');
+  const cEl=document.getElementById('recipe-scan-confirm');
+  cEl.style.display='none';
+  sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading recipe card…</div>';
+  try{
+    const b64=await fileToBase64(file);
+    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',max_tokens:600,
+      messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},
+        {type:'text',text:`Read this recipe card or handwritten recipe. Extract the recipe name and ingredients list. Return ONLY valid JSON, no markdown:\n{"name":"recipe name","ingredients":["ingredient 1","ingredient 2"]}\nIngredients should be generic names only, no quantities, no brands.\nIf this is not a recipe: {"error":"not a recipe"}`}
+      ]}]
+    })});
+    const data=await resp.json();
+    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    if(parsed.error){sEl.innerHTML=`<div class="error-state">${esc(parsed.error)} — please try another photo.</div>`;return;}
+    pendingRecipeScan=parsed;
+    sEl.innerHTML=`<div class="scan-result">
+      <div class="scan-field"><span class="scan-key">recipe</span><span class="scan-val">${esc(parsed.name)}</span></div>
+      <div class="scan-field"><span class="scan-key">ingredients</span><span class="scan-val">${parsed.ingredients.length} items found</span></div>
+      <div style="margin-top:8px;font-size:12px;color:var(--muted);">${parsed.ingredients.map(i=>`<span style="display:block;padding:2px 0;color:var(--text);">${esc(i)}</span>`).join('')}</div>
+    </div>`;
+    cEl.style.display='flex';
+  }catch(e){sEl.innerHTML='<div class="error-state">Could not read the recipe. Please try a clearer photo.</div>';}
+  input.value='';
+}
+
+async function confirmRecipeScan(){
+  if(!pendingRecipeScan)return;
+  const r={id:Date.now(),name:pendingRecipeScan.name,ingredients:pendingRecipeScan.ingredients};
+  recipeCards.push(r);
+  await saveRecipeCardToDb(r);
+  hideRecipeForm();
+  renderRecipeCards();
+  updateRecipeCount();
+  showToast('Recipe card saved ✓');
+}
+function dismissRecipeScan(){pendingRecipeScan=null;document.getElementById('recipe-scan-status').innerHTML='';document.getElementById('recipe-scan-confirm').style.display='none';}
+
+async function deleteRecipeCard(id){
+  recipeCards=recipeCards.filter(r=>r.id!==id);
+  await deleteRecipeCardFromDb(id);
+  // clear from any meal plan slots
+  mealPlan.forEach(m=>{if(m.recipeId===id){m.recipeId=null;m.source='ai';}});
+  renderRecipeCards();
+  buildDinnerCards();
+  updateRecipeCount();
+}
+
+function renderRecipeCards(){
+  const el=document.getElementById('recipe-card-list');
+  if(!recipeCards.length){el.innerHTML='<p class="no-recipes">No recipe cards saved yet</p>';return;}
+  el.innerHTML='<div class="recipe-card-list">'+recipeCards.map(r=>`
+    <div class="recipe-card-item" id="rci-${r.id}">
+      <div class="recipe-card-header" onclick="toggleRecipeCard(${r.id})">
+        <span class="recipe-card-name">${esc(r.name)}</span>
+        <span class="recipe-card-meta">${r.ingredients.length} ingredients</span>
+        <button class="btn btn-sm" style="margin-left:8px;color:var(--faint);border-color:transparent;" onclick="event.stopPropagation();deleteRecipeCard(${r.id})"><i class="ti ti-trash"></i></button>
+        <span class="chevron" id="rchev-${r.id}" style="margin-left:4px;">▾</span>
+      </div>
+      <div class="recipe-card-body" id="rcb-${r.id}">
+        <div class="recipe-ingredient-list">
+          ${r.ingredients.map(ing=>`<div class="recipe-ingredient">${esc(ing)}</div>`).join('')}
+        </div>
+      </div>
+    </div>`).join('')+'</div>';
+}
+
+function toggleRecipeCard(id){
+  const body=document.getElementById('rcb-'+id);
+  const chev=document.getElementById('rchev-'+id);
+  const card=document.getElementById('rci-'+id);
+  const open=body.classList.toggle('open');
+  chev.classList.toggle('open',open);
+  card.classList.toggle('expanded',open);
+}
+function updateRecipeCount(){document.getElementById('recipe-count').textContent=recipeCards.length;}
 
 // ── DINNER CARDS ──
 function buildDinnerCards(){
   const g=document.getElementById('dinner-cards');
   g.innerHTML=DAYS.map((day,i)=>{
     const m=mealPlan[i];
-    const badge=m.source==='url'&&m.url?'<span class="dinner-source-badge source-url">URL</span>':m.source==='manual'&&m.manualText?'<span class="dinner-source-badge source-manual">Manual</span>':m.name?'<span class="dinner-source-badge source-ai">AI</span>':'';
+    const selectedRecipe=m.recipeId?recipeCards.find(r=>r.id===m.recipeId):null;
+    const badge=m.source==='recipe'&&selectedRecipe?'<span class="dinner-source-badge source-recipe">Recipe Card</span>':m.source==='url'&&m.url?'<span class="dinner-source-badge source-url">URL</span>':m.source==='manual'&&m.manualText?'<span class="dinner-source-badge source-manual">Manual</span>':m.name?'<span class="dinner-source-badge source-ai">AI</span>':'';
     return`<div class="dinner-card" id="dc-${i}">
       <div class="dinner-card-header" onclick="toggleCard(${i})">
         <span class="day-pill">${day}</span>
@@ -415,13 +561,27 @@ function buildDinnerCards(){
         <input type="text" id="meal-name-${i}" value="${esc(m.name)}" placeholder="e.g. Chicken tacos" oninput="updateName(${i},this.value)">
         <div class="field-label">Ingredient source</div>
         <div class="source-tabs">
-          <button class="source-tab${m.source==='url'?' active-url':''}" onclick="setSource(${i},'url',this)"><i class="ti ti-link"></i> Recipe URL</button>
+          <button class="source-tab${m.source==='recipe'?' active-recipe':''}" onclick="setSource(${i},'recipe',this)"><i class="ti ti-cards"></i> Recipe card</button>
+          <button class="source-tab${m.source==='url'?' active-url':''}" onclick="setSource(${i},'url',this)"><i class="ti ti-link"></i> URL</button>
           <button class="source-tab${m.source==='manual'?' active-manual':''}" onclick="setSource(${i},'manual',this)"><i class="ti ti-pencil"></i> Manual</button>
-          <button class="source-tab${m.source==='ai'?' active-ai':''}" onclick="setSource(${i},'ai',this)"><i class="ti ti-sparkles"></i> AI generate</button>
+          <button class="source-tab${m.source==='ai'?' active-ai':''}" onclick="setSource(${i},'ai',this)"><i class="ti ti-sparkles"></i> AI</button>
         </div>
+
+        <div class="source-panel${m.source==='recipe'?' active':''}" id="sp-recipe-${i}">
+          ${recipeCards.length===0
+            ? `<p style="font-size:12px;color:var(--muted);line-height:1.6;padding:4px 0;">No recipe cards saved yet. Go to the <strong style="color:var(--gold)">Recipe Cards</strong> tab to add some.</p>`
+            : `<div class="recipe-search-box">
+                <input type="text" class="recipe-search-input" id="recipe-search-${i}" placeholder="Search recipe cards…" oninput="filterRecipes(${i},this.value)" onfocus="openRecipeDropdown(${i})" autocomplete="off">
+                <div class="recipe-dropdown" id="recipe-dd-${i}"></div>
+              </div>
+              ${selectedRecipe?`<div class="selected-recipe-card"><span class="selected-recipe-name"><i class="ti ti-cards"></i> ${esc(selectedRecipe.name)}</span><span class="selected-recipe-count">${selectedRecipe.ingredients.length} ingredients</span></div>`:''}
+              `
+          }
+        </div>
+
         <div class="source-panel${m.source==='url'?' active':''}" id="sp-url-${i}">
           <input type="text" id="meal-url-${i}" value="${esc(m.url)}" placeholder="https://www.allrecipes.com/recipe/…" oninput="updateUrl(${i},this.value)">
-          <p style="font-size:11px;color:var(--faint);margin-top:6px;line-height:1.5;">Paste a recipe URL. Falls back to AI if the page can't be read.</p>
+          <p style="font-size:11px;color:var(--faint);margin-top:6px;line-height:1.5;">Falls back to AI if the page can't be read.</p>
         </div>
         <div class="source-panel${m.source==='manual'?' active':''}" id="sp-manual-${i}">
           <textarea style="height:90px;" id="meal-manual-${i}" placeholder="One ingredient per line" oninput="updateManual(${i},this.value)">${esc(m.manualText)}</textarea>
@@ -434,22 +594,43 @@ function buildDinnerCards(){
   }).join('');
 }
 
+function filterRecipes(i,query){
+  const dd=document.getElementById('recipe-dd-'+i);
+  const filtered=query?recipeCards.filter(r=>r.name.toLowerCase().includes(query.toLowerCase())):recipeCards;
+  if(!filtered.length){dd.innerHTML='<div class="recipe-option" style="color:var(--faint);">No matches</div>';}
+  else{dd.innerHTML=filtered.map(r=>`<div class="recipe-option" onclick="selectRecipe(${i},${r.id})"><span class="recipe-option-name">${esc(r.name)}</span><span class="recipe-option-count">${r.ingredients.length} ingredients</span></div>`).join('');}
+  dd.classList.add('open');
+}
+
+function openRecipeDropdown(i){
+  filterRecipes(i,document.getElementById('recipe-search-'+i)?.value||'');
+}
+
+function selectRecipe(i,recipeId){
+  mealPlan[i].recipeId=recipeId;
+  const r=recipeCards.find(rc=>rc.id===recipeId);
+  if(r&&!mealPlan[i].name){mealPlan[i].name=r.name;const el=document.getElementById('dn-'+i);if(el){el.textContent=r.name;el.classList.remove('empty');}const ni=document.getElementById('meal-name-'+i);if(ni)ni.value=r.name;}
+  document.querySelectorAll('.recipe-dropdown').forEach(d=>d.classList.remove('open'));
+  buildDinnerCards();
+  // reopen card
+  setTimeout(()=>{const body=document.getElementById('db-'+i);const chev=document.getElementById('chev-'+i);const card=document.getElementById('dc-'+i);if(body&&!body.classList.contains('open')){body.classList.add('open');if(chev)chev.classList.add('open');if(card)card.classList.add('expanded');}},50);
+}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.recipe-search-box'))document.querySelectorAll('.recipe-dropdown').forEach(d=>d.classList.remove('open'));});
+
 function toggleCard(i){
-  const body=document.getElementById('db-'+i);
-  const chev=document.getElementById('chev-'+i);
-  const card=document.getElementById('dc-'+i);
-  const open=body.classList.toggle('open');
-  chev.classList.toggle('open',open);
-  card.classList.toggle('expanded',open);
+  const body=document.getElementById('db-'+i);const chev=document.getElementById('chev-'+i);const card=document.getElementById('dc-'+i);
+  const open=body.classList.toggle('open');chev.classList.toggle('open',open);card.classList.toggle('expanded',open);
 }
 function updateName(i,val){mealPlan[i].name=val;const el=document.getElementById('dn-'+i);el.textContent=val||'No dinner set';el.classList.toggle('empty',!val);}
 function updateUrl(i,val){mealPlan[i].url=val;}
 function updateManual(i,val){mealPlan[i].manualText=val;}
 function setSource(i,src,btn){
   mealPlan[i].source=src;
+  if(src!=='recipe')mealPlan[i].recipeId=null;
   btn.closest('.source-tabs').querySelectorAll('.source-tab').forEach(t=>t.className='source-tab');
-  btn.classList.add(src==='url'?'active-url':src==='manual'?'active-manual':'active-ai');
-  ['url','manual','ai'].forEach(s=>{const p=document.getElementById(`sp-${s}-${i}`);if(p)p.classList.toggle('active',s===src);});
+  btn.classList.add(src==='recipe'?'active-recipe':src==='url'?'active-url':src==='manual'?'active-manual':'active-ai');
+  ['recipe','url','manual','ai'].forEach(s=>{const p=document.getElementById(`sp-${s}-${i}`);if(p)p.classList.toggle('active',s===src);});
 }
 
 async function saveMealPlan(){
@@ -457,23 +638,17 @@ async function saveMealPlan(){
     const n=document.getElementById('meal-name-'+i);const u=document.getElementById('meal-url-'+i);const m=document.getElementById('meal-manual-'+i);
     if(n)mealPlan[i].name=n.value.trim();if(u)mealPlan[i].url=u.value.trim();if(m)mealPlan[i].manualText=m.value.trim();
   });
-  await saveMealPlanToDb();
-  showToast('Menu saved ✓');
+  await saveMealPlanToDb();showToast('Menu saved ✓');
 }
+function clearMealPlan(){mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeId:null}));buildDinnerCards();document.getElementById('draft-panel').style.display='none';}
 
-function clearMealPlan(){
-  mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:''}));
-  buildDinnerCards();
-  document.getElementById('draft-panel').style.display='none';
-}
-
-// ── CLAUDE API ──
-async function callClaude(messages, useWebSearch=false){
+// ── CLAUDE ──
+async function callClaude(messages,useWebSearch=false){
   const body={model:'claude-sonnet-4-20250514',max_tokens:800,messages};
-  if(useWebSearch) body.tools=[{type:'web_search_20250305',name:'web_search'}];
+  if(useWebSearch)body.tools=[{type:'web_search_20250305',name:'web_search'}];
   const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const data=await resp.json();
-  return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
+  return(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim();
 }
 
 async function generateDraft(){
@@ -489,23 +664,25 @@ async function generateDraft(){
   for(let i=0;i<mealPlan.length;i++){
     const m=mealPlan[i];if(!m.name)continue;
     const day=DAYS[i];let items=[],method='';
-    if(m.source==='manual'&&m.manualText.trim()){
-      items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);method='manual';
-    } else if(m.source==='url'&&m.url.trim()){
-      dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Fetching recipe for ${esc(m.name)}…</div>`;
-      try{
-        const text=await callClaude([{role:'user',content:`Fetch this recipe page and extract only the ingredient list: ${m.url}\n\nReturn ONLY a plain list of ingredients, one per line, generic names, no quantities, no brands, no instructions. If you cannot access the page, return exactly the word FAILED.`}],true);
-        if(!text||text==='FAILED'||text.length<10) throw new Error('fetch failed');
-        items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED');
-        method='url';
-      }catch(e){
-        items=await aiIngredients(m.name);method='ai-fallback';
-      }
-    } else {
-      dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Generating ingredients for ${esc(m.name)}…</div>`;
-      items=await aiIngredients(m.name);method='ai';
+    if(m.source==='recipe'&&m.recipeId){
+      const r=recipeCards.find(rc=>rc.id===m.recipeId);
+      if(r){items=[...r.ingredients];method='recipe';}
     }
-    const badge=method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='ai-fallback'?'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI fallback</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI</span>';
+    if(!items.length){
+      if(m.source==='manual'&&m.manualText.trim()){items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);method='manual';}
+      else if(m.source==='url'&&m.url.trim()){
+        dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Fetching recipe for ${esc(m.name)}…</div>`;
+        try{
+          const text=await callClaude([{role:'user',content:`Fetch this recipe page and extract only the ingredient list: ${m.url}\nReturn ONLY a plain list, one ingredient per line, generic names, no quantities. If you cannot access the page return FAILED.`}],true);
+          if(!text||text==='FAILED'||text.length<10)throw new Error('failed');
+          items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED');method='url';
+        }catch(e){items=await aiIngredients(m.name);method='ai-fallback';}
+      } else {
+        dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Generating ingredients for ${esc(m.name)}…</div>`;
+        items=await aiIngredients(m.name);method='ai';
+      }
+    }
+    const badge=method==='recipe'?'<span class="dinner-source-badge source-recipe" style="font-size:10px;">Recipe Card</span>':method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='ai-fallback'?'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI fallback</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI</span>';
     allItems.push(...items);
     html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(it)}</span><br>`).join('')}`;
   }
@@ -516,7 +693,7 @@ async function generateDraft(){
 
 async function aiIngredients(mealName){
   try{
-    const text=await callClaude([{role:'user',content:`List typical grocery store ingredients for: ${mealName}\nRules: one per line, generic names, no brands, no quantities, omit pantry staples (salt pepper basic oil). Return ONLY the ingredient list.`}]);
+    const text=await callClaude([{role:'user',content:`List typical grocery store ingredients for: ${mealName}\nOne per line, generic names, no brands, no quantities, omit basic pantry staples. Return ONLY the list.`}]);
     return text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);
   }catch(e){return[];}
 }
@@ -558,101 +735,53 @@ async function scanCoupon(input){
   if(!input.files||!input.files[0])return;
   const file=input.files[0];
   const sEl=document.getElementById('scan-status'),cEl=document.getElementById('scan-confirm');
-  cEl.style.display='none';
-  sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading coupon…</div>';
+  cEl.style.display='none';sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading coupon…</div>';
   try{
     const b64=await fileToBase64(file);
-    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:400,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},
-        {type:'text',text:`Read this physical grocery coupon. Return ONLY valid JSON, no markdown:\n{"item":"generic item name","brand":"brand or empty string","discount":"as shown e.g. $1.00 off","expiry":"YYYY-MM-DD or empty string"}\nIf not a coupon: {"error":"not a coupon"}`}
-      ]}]
-    })});
+    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},{type:'text',text:`Read this physical grocery coupon. Return ONLY valid JSON, no markdown:\n{"item":"generic item name","brand":"brand or empty string","discount":"as shown e.g. $1.00 off","expiry":"YYYY-MM-DD or empty string"}\nIf not a coupon: {"error":"not a coupon"}`}]}]})});
     const data=await resp.json();
     const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
     const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
     if(parsed.error){sEl.innerHTML=`<div class="error-state">${esc(parsed.error)} — please try another photo.</div>`;return;}
     pendingCoupon=parsed;
-    sEl.innerHTML=`<div class="scan-result">
-      <div class="scan-field"><span class="scan-key">item</span><span class="scan-val">${esc(parsed.item)}</span></div>
-      ${parsed.brand?`<div class="scan-field"><span class="scan-key">brand</span><span class="scan-val">${esc(parsed.brand)}</span></div>`:''}
-      <div class="scan-field"><span class="scan-key">discount</span><span class="scan-val">${esc(parsed.discount)}</span></div>
-      ${parsed.expiry?`<div class="scan-field"><span class="scan-key">expires</span><span class="scan-val">${esc(parsed.expiry)}</span></div>`:''}
-    </div>`;
+    sEl.innerHTML=`<div class="scan-result"><div class="scan-field"><span class="scan-key">item</span><span class="scan-val">${esc(parsed.item)}</span></div>${parsed.brand?`<div class="scan-field"><span class="scan-key">brand</span><span class="scan-val">${esc(parsed.brand)}</span></div>`:''}<div class="scan-field"><span class="scan-key">discount</span><span class="scan-val">${esc(parsed.discount)}</span></div>${parsed.expiry?`<div class="scan-field"><span class="scan-key">expires</span><span class="scan-val">${esc(parsed.expiry)}</span></div>`:''}</div>`;
     cEl.style.display='flex';
   }catch(e){sEl.innerHTML='<div class="error-state">Could not read the coupon. Please try a clearer photo.</div>';}
   input.value='';
 }
-
 async function confirmCoupon(){
-  if(!pendingCoupon)return;
-  const c={...pendingCoupon,id:Date.now()};
-  coupons.push(c);
-  await saveCouponToDb(c);
-  pendingCoupon=null;
-  document.getElementById('scan-status').innerHTML='';
-  document.getElementById('scan-confirm').style.display='none';
-  renderCoupons();updateCouponCount();
+  if(!pendingCoupon)return;const c={...pendingCoupon,id:Date.now()};coupons.push(c);await saveCouponToDb(c);pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';renderCoupons();updateCouponCount();
 }
 function dismissScan(){pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';}
-
 async function deleteCoupon(id){
   const c=coupons.find(x=>x.id===id);
-  if(c){
-    const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||'',deletedOn:todayStr(),id:Date.now(),manualDelete:true};
-    tombstones.push(tb);
-    await saveTombstoneToDb(tb);
-  }
-  coupons=coupons.filter(x=>x.id!==id);
-  await deleteCouponFromDb(id);
-  renderCoupons();updateCouponCount();
+  if(c){const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||'',deletedOn:todayStr(),id:Date.now(),manualDelete:true};tombstones.push(tb);await saveTombstoneToDb(tb);}
+  coupons=coupons.filter(x=>x.id!==id);await deleteCouponFromDb(id);renderCoupons();updateCouponCount();
 }
-
 function renderCoupons(){
   const el=document.getElementById('coupon-list-el');
-  el.innerHTML=coupons.length?'<div class="coupon-list">'+coupons.map(c=>`
-    <div class="coupon-card">
-      <div class="coupon-discount">${esc(c.discount)}</div>
-      <div class="coupon-info">
-        <div class="coupon-item-name">${esc(c.item)}${c.brand?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.brand)}</span>`:''}</div>
-        <div class="coupon-meta">${c.expiry?'expires '+esc(c.expiry):'no expiry'}</div>
-      </div>
-      <button class="coupon-delete" onclick="deleteCoupon(${c.id})"><i class="ti ti-trash"></i></button>
-    </div>`).join('')+'</div>':'<p class="no-coupons">No active coupons saved</p>';
+  el.innerHTML=coupons.length?'<div class="coupon-list">'+coupons.map(c=>`<div class="coupon-card"><div class="coupon-discount">${esc(c.discount)}</div><div class="coupon-info"><div class="coupon-item-name">${esc(c.item)}${c.brand?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.brand)}</span>`:''}</div><div class="coupon-meta">${c.expiry?'expires '+esc(c.expiry):'no expiry'}</div></div><button class="coupon-delete" onclick="deleteCoupon(${c.id})"><i class="ti ti-trash"></i></button></div>`).join('')+'</div>':'<p class="no-coupons">No active coupons saved</p>';
   const expSec=document.getElementById('expired-section');
   if(!tombstones.length){expSec.style.display='none';return;}
   expSec.style.display='';
-  document.getElementById('tombstone-list').innerHTML=tombstones.slice().reverse().map(tb=>{
-    const age=daysSince(tb.deletedOn);
-    const al=age===0?'today':age===1?'yesterday':`${age}d ago`;
-    return`<div class="tombstone"><span class="tombstone-item">${esc(tb.item)}${tb.brand?' · '+esc(tb.brand):''} <span style="color:var(--faint)">${esc(tb.discount)}</span></span><span class="tombstone-meta">${tb.manualDelete?'removed':'expired'} · deleted ${al}</span></div>`;
-  }).join('');
+  document.getElementById('tombstone-list').innerHTML=tombstones.slice().reverse().map(tb=>{const age=daysSince(tb.deletedOn);const al=age===0?'today':age===1?'yesterday':`${age}d ago`;return`<div class="tombstone"><span class="tombstone-item">${esc(tb.item)}${tb.brand?' · '+esc(tb.brand):''} <span style="color:var(--faint)">${esc(tb.discount)}</span></span><span class="tombstone-meta">${tb.manualDelete?'removed':'expired'} · deleted ${al}</span></div>`;}).join('');
 }
 function updateCouponCount(){document.getElementById('coupon-count').textContent=coupons.length;}
 
-// ── TABS ──
+// ── TABS & UTILS ──
 function switchTab(tab,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   if(el)el.classList.add('active');
-  ['menu','sort','wallet','aisles'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  ['menu','sort','recipes','wallet','aisles'].forEach(t=>document.getElementById('tab-'+t).style.display=t===tab?'':'none');
   if(tab==='aisles')renderAisleList();
 }
 function renderAisleList(){
-  document.getElementById('aisle-list').innerHTML=AISLES.map(a=>`
-    <div class="aisle-row">
-      <span class="aisle-num">${String(a.n).padStart(2,'0')}</span>
-      <span class="aisle-name-col"><span style="width:7px;height:7px;border-radius:50%;background:${a.color};flex-shrink:0;display:inline-block;"></span>${a.name}</span>
-      <span class="aisle-kw-col">${a.kw.slice(0,5).join(', ')}…</span>
-    </div>`).join('');
+  document.getElementById('aisle-list').innerHTML=AISLES.map(a=>`<div class="aisle-row"><span class="aisle-num">${String(a.n).padStart(2,'0')}</span><span class="aisle-name-col"><span style="width:7px;height:7px;border-radius:50%;background:${a.color};flex-shrink:0;display:inline-block;"></span>${a.name}</span><span class="aisle-kw-col">${a.kw.slice(0,5).join(', ')}…</span></div>`).join('');
 }
-
-// ── UTILS ──
 function showToast(msg){
   let t=document.getElementById('toast');
   if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--surface2);color:var(--text);border:0.5px solid var(--border-strong);border-radius:8px;padding:8px 18px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.2s;pointer-events:none;';document.body.appendChild(t);}
-  t.textContent=msg;t.style.opacity='1';
-  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2400);
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2400);
 }
 function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('fail'));r.readAsDataURL(file);});}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
