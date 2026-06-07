@@ -725,7 +725,20 @@ function sendToShopper(){
 }
 
 // ── SORT ──
-function matchAisle(item){const l=item.toLowerCase();for(const a of AISLES)for(const kw of a.kw)if(l.includes(kw))return a;return null;}
+function matchAisle(item){
+  const l=item.toLowerCase();
+  // Score each aisle by longest keyword match — more specific keywords win
+  let bestAisle=null, bestLen=0;
+  for(const a of AISLES){
+    for(const kw of a.kw){
+      if(l.includes(kw) && kw.length>bestLen){
+        bestLen=kw.length;
+        bestAisle=a;
+      }
+    }
+  }
+  return bestAisle;
+}
 function matchCoupon(item){const l=item.toLowerCase();return coupons.find(c=>l.includes(c.item.toLowerCase())||c.item.toLowerCase().includes(l.split(' ')[0]));}
 
 function sortList(){
