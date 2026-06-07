@@ -86,7 +86,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .recipe-search-input{width:100%;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);}
 .recipe-search-input:focus{outline:none;border-color:var(--gold);}
 .recipe-search-input::placeholder{color:var(--faint);}
-.recipe-dropdown{position:absolute;top:100%;left:0;right:0;background:var(--surface2);border:0.5px solid var(--border-strong);border-radius:0 0 7px 7px;max-height:180px;overflow-y:auto;z-index:100;display:none;}
+.recipe-dropdown{position:fixed;background:var(--surface2);border:0.5px solid var(--border-strong);border-radius:7px;max-height:200px;overflow-y:auto;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
 .recipe-dropdown.open{display:block;}
 .recipe-option{padding:8px 12px;font-size:13px;cursor:pointer;color:var(--text);border-bottom:0.5px solid var(--border);}
 .recipe-option:last-child{border-bottom:none;}
@@ -594,11 +594,22 @@ function buildDinnerCards(){
   }).join('');
 }
 
+function positionDropdown(i){
+  const input=document.getElementById('recipe-search-'+i);
+  const dd=document.getElementById('recipe-dd-'+i);
+  if(!input||!dd)return;
+  const rect=input.getBoundingClientRect();
+  dd.style.top=(rect.bottom+window.scrollY+4)+'px';
+  dd.style.left=rect.left+'px';
+  dd.style.width=rect.width+'px';
+}
+
 function filterRecipes(i,query){
   const dd=document.getElementById('recipe-dd-'+i);
   const filtered=query?recipeCards.filter(r=>r.name.toLowerCase().includes(query.toLowerCase())):recipeCards;
   if(!filtered.length){dd.innerHTML='<div class="recipe-option" style="color:var(--faint);">No matches</div>';}
   else{dd.innerHTML=filtered.map(r=>`<div class="recipe-option" onclick="selectRecipe(${i},${r.id})"><span class="recipe-option-name">${esc(r.name)}</span><span class="recipe-option-count">${r.ingredients.length} ingredients</span></div>`).join('');}
+  positionDropdown(i);
   dd.classList.add('open');
 }
 
@@ -616,7 +627,14 @@ function selectRecipe(i,recipeId){
   setTimeout(()=>{const body=document.getElementById('db-'+i);const chev=document.getElementById('chev-'+i);const card=document.getElementById('dc-'+i);if(body&&!body.classList.contains('open')){body.classList.add('open');if(chev)chev.classList.add('open');if(card)card.classList.add('expanded');}},50);
 }
 
-document.addEventListener('click',e=>{if(!e.target.closest('.recipe-search-box'))document.querySelectorAll('.recipe-dropdown').forEach(d=>d.classList.remove('open'));});
+document.addEventListener('click',e=>{if(!e.target.closest('.recipe-search-box')&&!e.target.closest('.recipe-dropdown'))document.querySelectorAll('.recipe-dropdown').forEach(d=>d.classList.remove('open'));});
+window.addEventListener('scroll',()=>{
+  document.querySelectorAll('.recipe-dropdown.open').forEach(dd=>{
+    const idx=dd.id.replace('recipe-dd-','');
+    positionDropdown(parseInt(idx));
+  });
+},true);
+window.addEventListener('resize',()=>document.querySelectorAll('.recipe-dropdown').forEach(d=>d.classList.remove('open')));
 
 function toggleCard(i){
   const body=document.getElementById('db-'+i);const chev=document.getElementById('chev-'+i);const card=document.getElementById('dc-'+i);
