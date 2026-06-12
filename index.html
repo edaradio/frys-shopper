@@ -455,7 +455,7 @@ let AISLES=DEFAULT_AISLES.map(a=>({...a,kw:[...a.kw]}));
 
 const DAYS=['Fri','Sat','Sun','Mon','Tue','Wed','Thu'];
 let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeIds:[]}));
-let coupons=[],tombstones=[],recipeCards=[],pendingCoupon=null,pendingDraft=[],pendingRecipeScan=null;
+let coupons=[],tombstones=[],recipeCards=[],pendingCoupon=null,pendingDraft=[],pendingDraftObjects=[],pendingRecipeScan=null;
 
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function daysSince(d){return Math.floor((new Date()-new Date(d+'T00:00:00'))/864e5);}
@@ -737,7 +737,19 @@ function positionDropdown(i){
   const dd=document.getElementById('recipe-dd-'+i);
   if(!input||!dd)return;
   const rect=input.getBoundingClientRect();
-  dd.style.top=(rect.bottom+window.scrollY+4)+'px';
+  const vh=window.innerHeight;
+  const spaceBelow=vh-rect.bottom-8;
+  const spaceAbove=rect.top-8;
+  if(spaceBelow<120&&spaceAbove>spaceBelow){
+    // open upward when there's not enough room below
+    dd.style.top='auto';
+    dd.style.bottom=(vh-rect.top+4)+'px';
+    dd.style.maxHeight=Math.min(200,spaceAbove)+'px';
+  } else {
+    dd.style.bottom='auto';
+    dd.style.top=(rect.bottom+4)+'px';
+    dd.style.maxHeight=Math.min(200,Math.max(spaceBelow,120))+'px';
+  }
   dd.style.left=rect.left+'px';
   dd.style.width=rect.width+'px';
 }
@@ -833,29 +845,29 @@ async function generateDraft(){
     const day=DAYS[i];let items=[],method='';
     if(m.source==='recipe'&&m.recipeIds&&m.recipeIds.length){
       const matched=m.recipeIds.map(id=>recipeCards.find(rc=>rc.id===id)).filter(Boolean);
-      if(matched.length){matched.forEach(r=>r.ingredients.forEach(ing=>items.push(ingLine(ing))));method=matched.length>1?`${matched.length} recipe cards`:'recipe';}
+      if(matched.length){matched.forEach(r=>r.ingredients.forEach(ing=>items.push(fmtIng(ing))));method=matched.length>1?`${matched.length} recipe cards`:'recipe';}
     }
     if(!items.length){
-      if(m.source==='manual'&&m.manualText.trim()){items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);method='manual';}
+      if(m.source==='manual'&&m.manualText.trim()){items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean).map(s=>({qty:'',name:s}));method='manual';}
       else if(m.source==='url'&&m.url.trim()){
         dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Fetching recipe for ${esc(m.name)}…</div>`;
         try{
           const text=await callClaude([{role:'user',content:`Fetch this recipe page and extract only the ingredient list: ${m.url}\nReturn ONLY a plain list, one ingredient per line, generic names, no quantities. If you cannot access the page return FAILED.`}],true);
           if(!text||text==='FAILED'||text.length<10)throw new Error('failed');
-          items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED');method='url';
-        }catch(e){items=await aiIngredients(m.name);method='ai-fallback';}
+          items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED').map(s=>({qty:'',name:s}));method='url';
+        }catch(e){items=(await aiIngredients(m.name)).map(s=>({qty:'',name:s}));method='ai-fallback';}
       } else {
         dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Generating ingredients for ${esc(m.name)}…</div>`;
-        items=await aiIngredients(m.name);method='ai';
+        items=(await aiIngredients(m.name)).map(s=>({qty:'',name:s}));method='ai';
       }
     }
     const badge=method==='recipe'||method.includes('recipe cards')?`<span class="dinner-source-badge source-recipe" style="font-size:10px;">${method==='recipe'?'Recipe Card':esc(method)}</span>`:method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='ai-fallback'?'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI fallback</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI</span>';
     allItems.push(...items);
-    html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(it)}</span><br>`).join('')}`;
+    html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(ingLine(it))}</span><br>`).join('')}`;
   }
-  const seen=new Set();
-  pendingDraft=allItems.map(it=>typeof it==='string'?it:ingLine(it)).filter(it=>{const k=it.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
-  dc.innerHTML=`<div class="draft-preview">${html}</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">${pendingDraft.length} unique ingredients. Duplicates removed when sent to shopper.</p>`;
+  pendingDraftObjects=allItems;
+  pendingDraft=allItems.map(it=>ingLine(it));
+  dc.innerHTML=`<div class="draft-preview">${html}</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">${allItems.length} ingredients across all meals. Duplicates are combined and totaled when sent to the shopper.</p>`;
 }
 
 async function aiIngredients(mealName){
@@ -865,12 +877,61 @@ async function aiIngredients(mealName){
   }catch(e){return[];}
 }
 
+// ── QUANTITY CONSOLIDATION ──
+function normalizeUnit(u){
+  u=(u||'').toLowerCase().trim().replace(/\.$/,'');
+  const map={lbs:'lb',pound:'lb',pounds:'lb',ounce:'oz',ounces:'oz',ozs:'oz',cups:'cup',c:'cup',tablespoons:'tbsp',tablespoon:'tbsp',tbs:'tbsp',teaspoons:'tsp',teaspoon:'tsp',cans:'can',cloves:'clove',grams:'g',gram:'g',kilograms:'kg',kilogram:'kg',quarts:'qt',quart:'qt',gallons:'gal',gallon:'gal',pints:'pt',pint:'pt',bunches:'bunch',heads:'head',packages:'pkg',package:'pkg',pkgs:'pkg',bags:'bag',boxes:'box',bottles:'bottle',jars:'jar'};
+  return map[u]||u;
+}
+function parseQty(q){
+  if(!q)return null;
+  const m=q.trim().match(/^(\d+\s+\d+\/\d+|\d+\/\d+|[\d.]+)\s*(.*)$/);
+  if(!m)return null;
+  let num;
+  const numStr=m[1].trim();
+  if(numStr.includes('/')){
+    const parts=numStr.split(/\s+/);
+    if(parts.length===2){const[a,b]=parts[1].split('/');num=parseFloat(parts[0])+parseFloat(a)/parseFloat(b);}
+    else{const[a,b]=numStr.split('/');num=parseFloat(a)/parseFloat(b);}
+  } else num=parseFloat(numStr);
+  if(isNaN(num))return null;
+  return{num,unit:normalizeUnit(m[2])};
+}
+function consolidateItems(objs){
+  const groups={};
+  for(const o of objs){
+    const f=fmtIng(o);
+    if(!f.name)continue;
+    const key=f.name.toLowerCase().trim();
+    if(!groups[key])groups[key]={name:f.name,qtys:[]};
+    if(f.qty)groups[key].qtys.push(f.qty);
+  }
+  const out=[];
+  for(const k of Object.keys(groups)){
+    const g=groups[k];
+    if(!g.qtys.length){out.push({name:g.name,qty:''});continue;}
+    const byUnit={};let unparseable=[];
+    for(const q of g.qtys){
+      const p=parseQty(q);
+      if(p)byUnit[p.unit]=(byUnit[p.unit]||0)+p.num;
+      else unparseable.push(q);
+    }
+    const parts=Object.entries(byUnit).map(([u,n])=>`${+n.toFixed(2)}${u?' '+u:''}`);
+    parts.push(...unparseable);
+    out.push({name:g.name,qty:parts.join(' + ')});
+  }
+  out.sort((a,b)=>a.name.localeCompare(b.name));
+  return out;
+}
+
 function sendToShopper(){
-  if(!pendingDraft.length){showToast('Generate a draft first');return;}
+  if(!pendingDraftObjects.length){showToast('Generate a draft first');return;}
+  const consolidated=consolidateItems(pendingDraftObjects);
+  const lines=consolidated.map(o=>o.qty?`${o.name} - ${o.qty}`:o.name);
   const existing=document.getElementById('list-input').value.trim();
-  document.getElementById('list-input').value=existing?existing+'\n'+pendingDraft.join('\n'):pendingDraft.join('\n');
+  document.getElementById('list-input').value=existing?existing+'\n'+lines.join('\n'):lines.join('\n');
   switchTab('sort',document.querySelectorAll('.tab')[1]);
-  showToast('Draft sent — edit before sorting');
+  showToast('Draft sent — quantities totaled, sorted A→Z');
 }
 
 // ── SORT ──
@@ -888,7 +949,19 @@ function matchAisle(item){
   }
   return bestAisle;
 }
-function matchCoupon(item){const l=item.toLowerCase();return coupons.find(c=>l.includes(c.item.toLowerCase())||c.item.toLowerCase().includes(l.split(' ')[0]));}
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function matchCoupon(item){
+  // strip the " - qty" suffix so we match on the ingredient name only
+  const name=item.toLowerCase().split(' - ')[0].trim();
+  if(!name)return null;
+  return coupons.find(c=>{
+    const ci=(c.item||'').toLowerCase().trim();
+    if(!ci||ci.length<3)return false;
+    // coupon item appears as a whole word/phrase in the ingredient name,
+    // or the full ingredient name appears as a whole word/phrase in the coupon item
+    return new RegExp('\\b'+escRe(ci)+'\\b').test(name)||new RegExp('\\b'+escRe(name)+'\\b').test(ci);
+  });
+}
 
 function sortList(){
   const items=document.getElementById('list-input').value.split('\n').map(s=>s.trim()).filter(Boolean);
