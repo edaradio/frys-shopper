@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fry's Shopper</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="chef-ogre.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.30.0/tabler-icons.min.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap');
@@ -170,20 +173,11 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
 .tombstone:last-child{border-bottom:none;}
 .tombstone-item{flex:1;}
 .tombstone-meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);}
-.aisle-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:12px;}
+.aisle-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:12px;}
 .aisle-row:last-child{border-bottom:none;}
 .aisle-num{width:28px;color:var(--faint);font-family:'DM Mono',monospace;font-size:11px;flex-shrink:0;}
 .aisle-name-col{width:160px;font-weight:500;color:var(--text);flex-shrink:0;display:flex;align-items:center;gap:5px;}
 .aisle-kw-col{flex:1;color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.aisle-edit-btn{background:none;border:none;cursor:pointer;color:var(--faint);font-size:13px;padding:2px 4px;flex-shrink:0;}
-.aisle-edit-btn:hover{color:var(--orange-light);}
-.aisle-edit-form{display:none;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:8px;padding:10px 12px;margin:4px 0 8px;}
-.aisle-edit-form.open{display:block;}
-.aisle-edit-row{display:flex;gap:8px;margin-bottom:8px;align-items:center;}
-.aisle-edit-label{font-size:11px;color:var(--muted);width:60px;flex-shrink:0;font-family:'DM Mono',monospace;}
-.aisle-edit-input{flex:1;background:var(--surface);border:0.5px solid var(--border-strong);border-radius:6px;padding:6px 8px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);}
-.aisle-edit-input:focus{outline:none;border-color:var(--orange);}
-.aisle-kw-hint{font-size:11px;color:var(--faint);margin-top:-4px;margin-bottom:8px;line-height:1.5;padding-left:68px;}
 .draft-preview{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);max-height:200px;overflow-y:auto;line-height:1.9;}
 .draft-preview span{color:var(--text);}
 .generating-state{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px;}
@@ -316,17 +310,41 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <!-- WALLET -->
   <div id="tab-wallet" style="display:none;">
     <div class="panel">
-      <div class="panel-label">Add Coupon by Photo</div>
-      <div class="upload-zone" onclick="document.getElementById('coupon-img').click()">
-        <input type="file" id="coupon-img" accept="image/*" capture="environment" onchange="scanCoupon(this)">
-        <i class="ti ti-camera upload-icon"></i>
-        <div class="upload-label">Tap to take a photo or choose from your library</div>
+      <div class="panel-label">Add Coupon</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="btn btn-primary" id="btn-photo-coupon" onclick="showCouponEntry('photo')"><i class="ti ti-camera"></i> Scan photo</button>
+        <button class="btn" id="btn-manual-coupon" onclick="showCouponEntry('manual')"><i class="ti ti-pencil"></i> Enter manually</button>
       </div>
-      <div id="scan-status" style="margin-top:10px;"></div>
-      <div id="scan-confirm" style="display:none;">
+
+      <!-- photo entry -->
+      <div id="coupon-photo-entry">
+        <div class="upload-zone" onclick="document.getElementById('coupon-img').click()">
+          <input type="file" id="coupon-img" accept="image/*" capture="environment" onchange="scanCoupon(this)">
+          <i class="ti ti-camera upload-icon"></i>
+          <div class="upload-label">Tap to take a photo or choose from your library</div>
+        </div>
+        <div id="scan-status" style="margin-top:10px;"></div>
+        <div id="scan-confirm" style="display:none;">
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="confirmCoupon()"><i class="ti ti-check"></i> Save coupon</button>
+            <button class="btn" onclick="dismissScan()"><i class="ti ti-x"></i> Discard</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- manual entry -->
+      <div id="coupon-manual-entry" style="display:none;">
+        <div class="field-label">Brand</div>
+        <input type="text" id="manual-coupon-brand" placeholder="e.g. Heinz" style="margin-bottom:8px;">
+        <div class="field-label">Item</div>
+        <input type="text" id="manual-coupon-item" placeholder="e.g. ketchup" style="margin-bottom:8px;">
+        <div class="field-label">Discount amount</div>
+        <input type="text" id="manual-coupon-discount" placeholder="e.g. $1.00 off, Buy 1 Get 1" style="margin-bottom:8px;">
+        <div class="field-label">Expiration date</div>
+        <input type="date" id="manual-coupon-expiry" style="margin-bottom:4px;width:100%;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);">
         <div class="btn-row">
-          <button class="btn btn-primary" onclick="confirmCoupon()"><i class="ti ti-check"></i> Save coupon</button>
-          <button class="btn" onclick="dismissScan()"><i class="ti ti-x"></i> Discard</button>
+          <button class="btn btn-primary" onclick="saveManualCoupon()"><i class="ti ti-check"></i> Save coupon</button>
+          <button class="btn" onclick="showCouponEntry('photo')"><i class="ti ti-x"></i> Cancel</button>
         </div>
       </div>
     </div>
@@ -343,12 +361,9 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <!-- AISLES -->
   <div id="tab-aisles" style="display:none;">
     <div class="panel">
-      <div class="panel-label">Aisle Map · 1935 N Stapley Dr</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Click <i class="ti ti-pencil" style="font-size:11px;"></i> to edit an aisle's name or keywords. Keywords drive sorting — separate with commas.</p>
+      <div class="panel-label">Verified Aisle Map · 1935 N Stapley Dr</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">49 aisles verified in-store.</p>
       <div id="aisle-list"></div>
-      <div class="btn-row" style="margin-top:14px;">
-        <button class="btn btn-sm" onclick="resetAisleMap()"><i class="ti ti-refresh"></i> Reset to defaults</button>
-      </div>
     </div>
   </div>
 </div>
@@ -366,7 +381,7 @@ async function sbFetch(path,method='GET',body=null){
   const t=await r.text();return t?JSON.parse(t):null;
 }
 
-const DEFAULT_AISLES=[
+const AISLES=[
   {n:1,name:"Produce & Floral",color:"#639922",kw:["flower","rose","balloon","plant","vase","fresh fruit","fresh vegetable","strawberr","cherr","blueberr","raspberr","blackberr","pear","peach","plum","apple","watermelon","cantaloupe","cucumber","squash","pumpkin","cauliflower","bell pepper","jalapeno","jalapeño","lemon","lime","avocado","tomato","lettuce","romaine","kale","cabbage","onion","potato","carrot","salad mix","cilantro","parsley","thyme","basil","spinach","banana","pistachio","mushroom","scallion","zucchini","broccoli","grape","mango","artichoke","beet","radish","arugula","ginger","garlic","corn","asparagus","herb","produce","fresh"]},
   {n:2,name:"Meat & Seafood",color:"#b03030",kw:["chicken breast","chicken thigh","chicken drum","chicken quarter","whole chicken","ground chicken","turkey breast","turkey leg","turkey quarter","ground turkey","bacon","ground pork","pork chop","pork rib","st. louis rib","baby back rib","pork shoulder","pork tenderloin","ham","bologna","lunchable","leg of lamb","lamb chop","beef","steak","filet mignon","beef tenderloin","new york strip","ribeye","t-bone","round steak","brisket","ground beef","hamburger","bison","salmon","ahi","mahi","pollock","tilapia","fresh shrimp","breakfast sausage","crab","lobster","meat","seafood","chicken","turkey","pork","fish"]},
   {n:3,name:"Prepared Meats",color:"#b03030",kw:["ready-to-eat meat","deli meat","hot dog","bratwurst","polish sausage","sausage link","pepperoni stick"]},
@@ -417,7 +432,6 @@ const DEFAULT_AISLES=[
   {n:48,name:"First Aid & Medicine",color:"#2a7ab5",kw:["band-aid","bandage","allergy medicine","cold medicine","aspirin","ibuprofen","decongestant","cough drop","mucinex","chap stick","sleeping pill","tylenol","rubbing alcohol","hydrogen peroxide","medicine","advil","benadryl","zyrtec","claritin","nyquil","dayquil","robitussin","theraflu","pepto","alka seltzer","first aid","antibiotic ointment","neosporin","ace bandage","heating pad"]},
   {n:49,name:"Digestion & Vitamins",color:"#2a7ab5",kw:["tums","vitamin","laxative","anti-diarrheal","imodium","probiotic","melatonin","fish oil","omega","zinc","magnesium","multivitamin","elderberry","supplement","collagen","protein powder","antacid","miralax","colace","gas-x","fiber","metamucil","centrum","one-a-day"]},
 ];
-let AISLES=DEFAULT_AISLES.map(a=>({...a,kw:[...a.kw]}));
 
 const DAYS=['Fri','Sat','Sun','Mon','Tue','Wed','Thu'];
 let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeId:null}));
@@ -432,23 +446,12 @@ async function loadFromSupabase(){
   try{const cp=await sbFetch('coupons?order=id');if(cp)coupons=cp.map(c=>({id:c.id,item:c.item,brand:c.brand,discount:c.discount,expiry:c.expiry}));}catch(e){}
   try{const tb=await sbFetch('tombstones?order=id');if(tb)tombstones=tb.map(t=>({id:t.id,item:t.item,brand:t.brand,discount:t.discount,expiry:t.expiry,deletedOn:t.deleted_on,manualDelete:t.manual_delete}));}catch(e){}
   try{const rc=await sbFetch('recipe_cards?order=id');if(rc)recipeCards=rc.map(r=>({id:r.id,name:r.name,ingredients:r.ingredients}));}catch(e){}
-  try{
-    const am=await sbFetch('aisle_map?id=eq.1');
-    if(am&&am.length>0&&am[0].aisles&&am[0].aisles.length===DEFAULT_AISLES.length){
-      AISLES=am[0].aisles;
-    }
-  }catch(e){}
   runMaintenance();
   buildDinnerCards();
   renderCoupons();
   renderRecipeCards();
   updateCouponCount();
   updateRecipeCount();
-}
-
-async function saveAisleMapToDb(){
-  try{await sbFetch('aisle_map?id=eq.1','DELETE');}catch(e){}
-  try{await sbFetch('aisle_map','POST',{id:1,aisles:AISLES,updated_at:new Date().toISOString()});}catch(e){console.error('aisle save error',e);}
 }
 
 async function saveMealPlanToDb(){
@@ -826,6 +829,36 @@ async function confirmCoupon(){
   if(!pendingCoupon)return;const c={...pendingCoupon,id:Date.now()};coupons.push(c);await saveCouponToDb(c);pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';renderCoupons();updateCouponCount();
 }
 function dismissScan(){pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';}
+
+function showCouponEntry(mode){
+  document.getElementById('coupon-photo-entry').style.display=mode==='photo'?'block':'none';
+  document.getElementById('coupon-manual-entry').style.display=mode==='manual'?'block':'none';
+  document.getElementById('btn-photo-coupon').className=mode==='photo'?'btn btn-primary':'btn';
+  document.getElementById('btn-manual-coupon').className=mode==='manual'?'btn btn-primary':'btn';
+  if(mode==='manual'){
+    document.getElementById('manual-coupon-brand').value='';
+    document.getElementById('manual-coupon-item').value='';
+    document.getElementById('manual-coupon-discount').value='';
+    document.getElementById('manual-coupon-expiry').value='';
+    setTimeout(()=>document.getElementById('manual-coupon-brand').focus(),50);
+  }
+}
+
+async function saveManualCoupon(){
+  const brand=document.getElementById('manual-coupon-brand').value.trim();
+  const item=document.getElementById('manual-coupon-item').value.trim();
+  const discount=document.getElementById('manual-coupon-discount').value.trim();
+  const expiry=document.getElementById('manual-coupon-expiry').value;
+  if(!item){showToast('Item name is required');return;}
+  if(!discount){showToast('Discount amount is required');return;}
+  const c={id:Date.now(),item,brand,discount,expiry};
+  coupons.push(c);
+  await saveCouponToDb(c);
+  showCouponEntry('photo');
+  renderCoupons();
+  updateCouponCount();
+  showToast('Coupon saved ✓');
+}
 async function deleteCoupon(id){
   const c=coupons.find(x=>x.id===id);
   if(c){const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||'',deletedOn:todayStr(),id:Date.now(),manualDelete:true};tombstones.push(tb);await saveTombstoneToDb(tb);}
@@ -849,70 +882,7 @@ function switchTab(tab,el){
   if(tab==='aisles')renderAisleList();
 }
 function renderAisleList(){
-  const container=document.getElementById('aisle-list');
-  container.innerHTML=AISLES.map(a=>`
-    <div id="aisle-block-${a.n}">
-      <div class="aisle-row">
-        <span class="aisle-num">${String(a.n).padStart(2,'0')}</span>
-        <span class="aisle-name-col">
-          <span style="width:7px;height:7px;border-radius:50%;background:${a.color};flex-shrink:0;display:inline-block;"></span>
-          ${esc(a.name)}
-        </span>
-        <span class="aisle-kw-col">${a.kw.slice(0,5).join(', ')}…</span>
-        <button class="aisle-edit-btn" onclick="toggleAisleEdit(${a.n})" title="Edit aisle"><i class="ti ti-pencil"></i></button>
-      </div>
-      <div class="aisle-edit-form" id="aisle-edit-${a.n}">
-        <div class="aisle-edit-row">
-          <span class="aisle-edit-label">Name</span>
-          <input type="text" class="aisle-edit-input" id="aisle-name-${a.n}" value="${esc(a.name)}">
-        </div>
-        <div class="aisle-edit-row">
-          <span class="aisle-edit-label">Keywords</span>
-          <input type="text" class="aisle-edit-input" id="aisle-kw-${a.n}" value="${esc(a.kw.join(', '))}">
-        </div>
-        <div class="aisle-kw-hint">Separate keywords with commas. Items are matched if any keyword appears in the item name. More specific keywords take priority over shorter ones.</div>
-        <div class="btn-row" style="margin-top:0;">
-          <button class="btn btn-primary btn-sm" onclick="saveAisleEdit(${a.n})"><i class="ti ti-check"></i> Save</button>
-          <button class="btn btn-sm" onclick="toggleAisleEdit(${a.n})"><i class="ti ti-x"></i> Cancel</button>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function toggleAisleEdit(n){
-  const form=document.getElementById('aisle-edit-'+n);
-  const isOpen=form.classList.toggle('open');
-  // reset values if closing without save
-  if(!isOpen){
-    const a=AISLES.find(x=>x.n===n);
-    if(a){
-      document.getElementById('aisle-name-'+n).value=a.name;
-      document.getElementById('aisle-kw-'+n).value=a.kw.join(', ');
-    }
-  }
-}
-
-async function saveAisleEdit(n){
-  const nameEl=document.getElementById('aisle-name-'+n);
-  const kwEl=document.getElementById('aisle-kw-'+n);
-  const newName=nameEl.value.trim();
-  const newKw=kwEl.value.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
-  if(!newName){showToast('Aisle name cannot be empty');return;}
-  if(!newKw.length){showToast('Add at least one keyword');return;}
-  const idx=AISLES.findIndex(a=>a.n===n);
-  if(idx===-1)return;
-  AISLES[idx]={...AISLES[idx],name:newName,kw:newKw};
-  await saveAisleMapToDb();
-  renderAisleList();
-  showToast(`Aisle ${String(n).padStart(2,'0')} updated ✓`);
-}
-
-async function resetAisleMap(){
-  if(!confirm('Reset the aisle map to the original verified layout? Any edits will be lost.'))return;
-  AISLES=DEFAULT_AISLES.map(a=>({...a,kw:[...a.kw]}));
-  try{await sbFetch('aisle_map?id=eq.1','DELETE');}catch(e){}
-  renderAisleList();
-  showToast('Aisle map reset to defaults ✓');
+  document.getElementById('aisle-list').innerHTML=AISLES.map(a=>`<div class="aisle-row"><span class="aisle-num">${String(a.n).padStart(2,'0')}</span><span class="aisle-name-col"><span style="width:7px;height:7px;border-radius:50%;background:${a.color};flex-shrink:0;display:inline-block;"></span>${a.name}</span><span class="aisle-kw-col">${a.kw.slice(0,5).join(', ')}…</span></div>`).join('');
 }
 function showToast(msg){
   let t=document.getElementById('toast');
