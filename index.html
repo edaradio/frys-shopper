@@ -833,7 +833,7 @@ async function generateDraft(){
     const day=DAYS[i];let items=[],method='';
     if(m.source==='recipe'&&m.recipeIds&&m.recipeIds.length){
       const matched=m.recipeIds.map(id=>recipeCards.find(rc=>rc.id===id)).filter(Boolean);
-      if(matched.length){matched.forEach(r=>items.push(...r.ingredients));method=matched.length>1?`${matched.length} recipe cards`:'recipe';}
+      if(matched.length){matched.forEach(r=>r.ingredients.forEach(ing=>items.push(ingLine(ing))));method=matched.length>1?`${matched.length} recipe cards`:'recipe';}
     }
     if(!items.length){
       if(m.source==='manual'&&m.manualText.trim()){items=m.manualText.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);method='manual';}
@@ -854,7 +854,7 @@ async function generateDraft(){
     html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(it)}</span><br>`).join('')}`;
   }
   const seen=new Set();
-  pendingDraft=allItems.filter(it=>{const k=it.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+  pendingDraft=allItems.map(it=>typeof it==='string'?it:ingLine(it)).filter(it=>{const k=it.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
   dc.innerHTML=`<div class="draft-preview">${html}</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">${pendingDraft.length} unique ingredients. Duplicates removed when sent to shopper.</p>`;
 }
 
