@@ -940,11 +940,71 @@ async function deleteCoupon(id){
 }
 function renderCoupons(){
   const el=document.getElementById('coupon-list-el');
-  el.innerHTML=coupons.length?'<div class="coupon-list">'+coupons.map(c=>`<div class="coupon-card"><div class="coupon-discount">${esc(c.discount)}</div><div class="coupon-info"><div class="coupon-item-name">${esc(c.item)}${c.brand?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.brand)}</span>`:''}</div><div class="coupon-meta">${c.expiry?'expires '+esc(c.expiry):'no expiry'}</div></div><button class="coupon-delete" onclick="deleteCoupon(${c.id})"><i class="ti ti-trash"></i></button></div>`).join('')+'</div>':'<p class="no-coupons">No active coupons saved</p>';
+  el.innerHTML=coupons.length?'<div class="coupon-list">'+coupons.map(c=>`
+    <div>
+      <div class="coupon-card">
+        <div class="coupon-discount">${esc(c.discount)}</div>
+        <div class="coupon-info">
+          <div class="coupon-item-name">${esc(c.item)}${c.brand?` <span style="font-weight:400;color:var(--muted)">· ${esc(c.brand)}</span>`:''}</div>
+          <div class="coupon-meta">${c.expiry?'expires '+esc(c.expiry):'no expiry'}</div>
+        </div>
+        <button class="coupon-delete" style="color:var(--muted);" onclick="toggleCouponEdit(${c.id})" title="Edit"><i class="ti ti-pencil"></i></button>
+        <button class="coupon-delete" onclick="deleteCoupon(${c.id})" title="Delete"><i class="ti ti-trash"></i></button>
+      </div>
+      <div id="coupon-edit-${c.id}" style="display:none;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:8px;padding:10px 12px;margin:4px 0 8px;">
+        <div class="field-label">Brand</div>
+        <input type="text" id="ce-brand-${c.id}" value="${esc(c.brand||'')}" placeholder="e.g. Heinz" style="margin-bottom:8px;">
+        <div class="field-label">Item</div>
+        <input type="text" id="ce-item-${c.id}" value="${esc(c.item)}" placeholder="e.g. ketchup" style="margin-bottom:8px;">
+        <div class="field-label">Discount amount</div>
+        <input type="text" id="ce-discount-${c.id}" value="${esc(c.discount)}" placeholder="e.g. $1.00 off" style="margin-bottom:8px;">
+        <div class="field-label">Expiration date</div>
+        <input type="date" id="ce-expiry-${c.id}" value="${esc(c.expiry||'')}" style="margin-bottom:4px;width:100%;background:var(--surface);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);">
+        <div class="btn-row">
+          <button class="btn btn-primary btn-sm" onclick="saveCouponEdit(${c.id})"><i class="ti ti-check"></i> Save changes</button>
+          <button class="btn btn-sm" onclick="toggleCouponEdit(${c.id})"><i class="ti ti-x"></i> Cancel</button>
+        </div>
+      </div>
+    </div>`).join('')+'</div>':'<p class="no-coupons">No active coupons saved</p>';
   const expSec=document.getElementById('expired-section');
   if(!tombstones.length){expSec.style.display='none';return;}
   expSec.style.display='';
   document.getElementById('tombstone-list').innerHTML=tombstones.slice().reverse().map(tb=>{const age=daysSince(tb.deletedOn);const al=age===0?'today':age===1?'yesterday':`${age}d ago`;return`<div class="tombstone"><span class="tombstone-item">${esc(tb.item)}${tb.brand?' · '+esc(tb.brand):''} <span style="color:var(--faint)">${esc(tb.discount)}</span></span><span class="tombstone-meta">${tb.manualDelete?'removed':'expired'} · deleted ${al}</span></div>`;}).join('');
+}
+
+function toggleCouponEdit(id){
+  const form=document.getElementById('coupon-edit-'+id);
+  const isOpen=form.style.display!=='none';
+  if(isOpen){
+    // restore original values on cancel
+    const c=coupons.find(x=>x.id===id);
+    if(c){
+      document.getElementById('ce-brand-'+id).value=c.brand||'';
+      document.getElementById('ce-item-'+id).value=c.item;
+      document.getElementById('ce-discount-'+id).value=c.discount;
+      document.getElementById('ce-expiry-'+id).value=c.expiry||'';
+    }
+    form.style.display='none';
+  } else {
+    form.style.display='block';
+    document.getElementById('ce-brand-'+id).focus();
+  }
+}
+
+async function saveCouponEdit(id){
+  const brand=document.getElementById('ce-brand-'+id).value.trim();
+  const item=document.getElementById('ce-item-'+id).value.trim();
+  const discount=document.getElementById('ce-discount-'+id).value.trim();
+  const expiry=document.getElementById('ce-expiry-'+id).value;
+  if(!item){showToast('Item name is required');return;}
+  if(!discount){showToast('Discount amount is required');return;}
+  const idx=coupons.findIndex(c=>c.id===id);
+  if(idx===-1)return;
+  coupons[idx]={...coupons[idx],brand,item,discount,expiry};
+  await deleteCouponFromDb(id);
+  await saveCouponToDb(coupons[idx]);
+  renderCoupons();
+  showToast('Coupon updated ✓');
 }
 function updateCouponCount(){document.getElementById('coupon-count').textContent=coupons.length;}
 
