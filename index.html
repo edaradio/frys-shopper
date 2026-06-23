@@ -243,7 +243,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <div id="tab-menu">
     <div class="panel">
       <div class="panel-label">This Week's Dinners</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">For each dinner, pick a source: a saved <span style="color:var(--gold);">recipe card</span>, a <span style="color:#6ee8a8;">recipe URL</span>, <span style="color:var(--purple);">manual</span> entry, or <span style="color:var(--orange-light);">AI generate</span>.</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">For each dinner, pick a source: a saved <span style="color:var(--gold);">recipe card</span>, a <span style="color:#6ee8a8;">recipe URL</span>, or <span style="color:var(--purple);">manual</span> entry.</p>
       <div class="dinner-cards" id="dinner-cards"></div>
       <div class="btn-row">
         <button class="btn btn-primary" onclick="generateDraft()"><i class="ti ti-sparkles"></i> Build grocery draft</button>
@@ -286,7 +286,6 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
       <div class="panel-label">Add Recipe Card</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
         <button class="btn btn-primary" onclick="showRecipeForm('manual')"><i class="ti ti-pencil"></i> Type manually</button>
-        <button class="btn" onclick="showRecipeForm('scan')"><i class="ti ti-camera"></i> Scan recipe card</button>
       </div>
 
       <!-- manual form -->
@@ -298,25 +297,6 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
         <div class="btn-row">
           <button class="btn btn-primary" onclick="saveManualRecipe()"><i class="ti ti-check"></i> Save recipe card</button>
           <button class="btn" onclick="hideRecipeForm()"><i class="ti ti-x"></i> Cancel</button>
-        </div>
-      </div>
-
-      <!-- scan form -->
-      <div id="recipe-scan-form" style="display:none;">
-        <div class="upload-zone" onclick="document.getElementById('recipe-img').click()">
-          <input type="file" id="recipe-img" accept="image/*" capture="environment" onchange="scanRecipeCard(this)">
-          <i class="ti ti-camera upload-icon"></i>
-          <div class="upload-label">Tap to photograph a recipe card or handwritten recipe</div>
-        </div>
-        <div id="recipe-scan-status" style="margin-top:10px;"></div>
-        <div id="recipe-scan-confirm" style="display:none;">
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="confirmRecipeScan()"><i class="ti ti-check"></i> Save recipe card</button>
-            <button class="btn" onclick="dismissRecipeScan()"><i class="ti ti-x"></i> Discard</button>
-          </div>
-        </div>
-        <div class="btn-row" style="margin-top:8px;">
-          <button class="btn btn-sm" onclick="hideRecipeForm()"><i class="ti ti-x"></i> Cancel</button>
         </div>
       </div>
     </div>
@@ -331,25 +311,7 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
   <div id="tab-wallet" style="display:none;">
     <div class="panel">
       <div class="panel-label">Add Coupon</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-        <button class="btn btn-primary" id="btn-photo-coupon" onclick="showCouponEntry('photo')"><i class="ti ti-camera"></i> Scan photo</button>
-        <button class="btn" id="btn-manual-coupon" onclick="showCouponEntry('manual')"><i class="ti ti-pencil"></i> Enter manually</button>
-      </div>
-      <div id="coupon-photo-entry">
-        <div class="upload-zone" onclick="document.getElementById('coupon-img').click()">
-          <input type="file" id="coupon-img" accept="image/*" capture="environment" onchange="scanCoupon(this)">
-          <i class="ti ti-camera upload-icon"></i>
-          <div class="upload-label">Tap to take a photo or choose from your library</div>
-        </div>
-        <div id="scan-status" style="margin-top:10px;"></div>
-        <div id="scan-confirm" style="display:none;">
-          <div class="btn-row">
-            <button class="btn btn-primary" onclick="confirmCoupon()"><i class="ti ti-check"></i> Save coupon</button>
-            <button class="btn" onclick="dismissScan()"><i class="ti ti-x"></i> Discard</button>
-          </div>
-        </div>
-      </div>
-      <div id="coupon-manual-entry" style="display:none;">
+      <div id="coupon-manual-entry">
         <div class="field-label">Brand</div>
         <input type="text" id="manual-coupon-brand" placeholder="e.g. Heinz" style="margin-bottom:8px;">
         <div class="field-label">Item</div>
@@ -360,7 +322,6 @@ input[type=text]:focus{outline:none;border-color:var(--orange);}
         <input type="date" id="manual-coupon-expiry" style="margin-bottom:4px;width:100%;background:var(--bg2);border:0.5px solid var(--border-strong);border-radius:6px;padding:7px 10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);">
         <div class="btn-row">
           <button class="btn btn-primary" onclick="saveManualCoupon()"><i class="ti ti-check"></i> Save coupon</button>
-          <button class="btn" onclick="showCouponEntry('photo')"><i class="ti ti-x"></i> Cancel</button>
         </div>
       </div>
     </div>
@@ -454,15 +415,15 @@ const DEFAULT_AISLES=[
 let AISLES=DEFAULT_AISLES.map(a=>({...a,kw:[...a.kw]}));
 
 const DAYS=['Fri','Sat','Sun','Mon','Tue','Wed','Thu'];
-let mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeIds:[]}));
-let coupons=[],tombstones=[],recipeCards=[],pendingCoupon=null,pendingDraft=[],pendingDraftObjects=[],pendingRecipeScan=null;
+let mealPlan=DAYS.map(()=>({name:'',source:'manual',url:'',manualText:'',recipeIds:[]}));
+let coupons=[],tombstones=[],recipeCards=[],pendingDraft=[],pendingDraftObjects=[];
 
 function todayStr(){return new Date().toISOString().split('T')[0];}
 function daysSince(d){return Math.floor((new Date()-new Date(d+'T00:00:00'))/864e5);}
 
 // ── SUPABASE ──
 async function loadFromSupabase(){
-  try{const mp=await sbFetch('meal_plan?id=eq.1');if(mp&&mp.length>0&&mp[0].meals)mealPlan=mp[0].meals.map(m=>({name:'',source:'ai',url:'',manualText:'',recipeIds:[],...m,recipeIds:Array.isArray(m.recipeIds)?m.recipeIds:m.recipeId?[m.recipeId]:[] }));}catch(e){}
+  try{const mp=await sbFetch('meal_plan?id=eq.1');if(mp&&mp.length>0&&mp[0].meals)mealPlan=mp[0].meals.map(m=>({name:'',source:'manual',url:'',manualText:'',recipeIds:[],...m,recipeIds:Array.isArray(m.recipeIds)?m.recipeIds:m.recipeId?[m.recipeId]:[],source:(m.source==='ai'?'manual':m.source)||'manual'}));}catch(e){}
   try{const cp=await sbFetch('coupons?order=id');if(cp)coupons=cp.map(c=>({id:c.id,item:c.item,brand:c.brand,discount:c.discount,expiry:c.expiry}));}catch(e){}
   try{const tb=await sbFetch('tombstones?order=id');if(tb)tombstones=tb.map(t=>({id:t.id,item:t.item,brand:t.brand,discount:t.discount,expiry:t.expiry,deletedOn:t.deleted_on,manualDelete:t.manual_delete}));}catch(e){}
   try{const rc=await sbFetch('recipe_cards?order=id');if(rc)recipeCards=rc.map(r=>({id:r.id,name:r.name,ingredients:r.ingredients}));}catch(e){}
@@ -508,17 +469,12 @@ function runMaintenance(){
 
 // ── RECIPE CARDS ──
 function showRecipeForm(type){
-  document.getElementById('recipe-manual-form').style.display=type==='manual'?'block':'none';
-  document.getElementById('recipe-scan-form').style.display=type==='scan'?'block':'none';
+  document.getElementById('recipe-manual-form').style.display='block';
 }
 function hideRecipeForm(){
   document.getElementById('recipe-manual-form').style.display='none';
-  document.getElementById('recipe-scan-form').style.display='none';
   document.getElementById('new-recipe-name').value='';
   document.getElementById('new-recipe-ingredients').value='';
-  document.getElementById('recipe-scan-status').innerHTML='';
-  document.getElementById('recipe-scan-confirm').style.display='none';
-  pendingRecipeScan=null;
 }
 
 async function saveManualRecipe(){
@@ -536,54 +492,11 @@ async function saveManualRecipe(){
   showToast('Recipe card saved ✓');
 }
 
-async function scanRecipeCard(input){
-  if(!input.files||!input.files[0])return;
-  const file=input.files[0];
-  const sEl=document.getElementById('recipe-scan-status');
-  const cEl=document.getElementById('recipe-scan-confirm');
-  cEl.style.display='none';
-  sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading recipe card…</div>';
-  try{
-    const b64=await fileToBase64(file);
-    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',max_tokens:600,
-      messages:[{role:'user',content:[
-        {type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},
-        {type:'text',text:`Read this recipe card or handwritten recipe. Extract the recipe name and ingredients list. Return ONLY valid JSON, no markdown:\n{"name":"recipe name","ingredients":["ingredient 1","ingredient 2"]}\nIngredients should be generic names only, no quantities, no brands.\nIf this is not a recipe: {"error":"not a recipe"}`}
-      ]}]
-    })});
-    const data=await resp.json();
-    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    if(parsed.error){sEl.innerHTML=`<div class="error-state">${esc(parsed.error)} — please try another photo.</div>`;return;}
-    pendingRecipeScan=parsed;
-    sEl.innerHTML=`<div class="scan-result">
-      <div class="scan-field"><span class="scan-key">recipe</span><span class="scan-val">${esc(parsed.name)}</span></div>
-      <div class="scan-field"><span class="scan-key">ingredients</span><span class="scan-val">${parsed.ingredients.length} items found</span></div>
-      <div style="margin-top:8px;font-size:12px;color:var(--muted);">${parsed.ingredients.map(i=>`<span style="display:block;padding:2px 0;color:var(--text);">${esc(i)}</span>`).join('')}</div>
-    </div>`;
-    cEl.style.display='flex';
-  }catch(e){sEl.innerHTML='<div class="error-state">Could not read the recipe. Please try a clearer photo.</div>';}
-  input.value='';
-}
-
-async function confirmRecipeScan(){
-  if(!pendingRecipeScan)return;
-  const r={id:Date.now(),name:pendingRecipeScan.name,ingredients:pendingRecipeScan.ingredients};
-  recipeCards.push(r);
-  await saveRecipeCardToDb(r);
-  hideRecipeForm();
-  renderRecipeCards();
-  updateRecipeCount();
-  showToast('Recipe card saved ✓');
-}
-function dismissRecipeScan(){pendingRecipeScan=null;document.getElementById('recipe-scan-status').innerHTML='';document.getElementById('recipe-scan-confirm').style.display='none';}
-
 async function deleteRecipeCard(id){
   recipeCards=recipeCards.filter(r=>r.id!==id);
   await deleteRecipeCardFromDb(id);
   // clear from any meal plan slots
-  mealPlan.forEach(m=>{m.recipeIds=(m.recipeIds||[]).filter(rid=>rid!==id);if(m.recipeIds.length===0&&m.source==='recipe')m.source='ai';});
+  mealPlan.forEach(m=>{m.recipeIds=(m.recipeIds||[]).filter(rid=>rid!==id);if(m.recipeIds.length===0&&m.source==='recipe')m.source='manual';});
   renderRecipeCards();
   buildDinnerCards();
   updateRecipeCount();
@@ -680,7 +593,7 @@ function buildDinnerCards(){
     const m=mealPlan[i];
     const selectedRecipes=(m.recipeIds||[]).map(id=>recipeCards.find(r=>r.id===id)).filter(Boolean);
     const totalIng=selectedRecipes.reduce((s,r)=>s+r.ingredients.length,0);
-    const badge=m.source==='recipe'&&selectedRecipes.length?`<span class="dinner-source-badge source-recipe">${selectedRecipes.length} Recipe${selectedRecipes.length>1?'s':''}</span>`:m.source==='url'&&m.url?'<span class="dinner-source-badge source-url">URL</span>':m.source==='manual'&&m.manualText?'<span class="dinner-source-badge source-manual">Manual</span>':m.name?'<span class="dinner-source-badge source-ai">AI</span>':'';
+    const badge=m.source==='recipe'&&selectedRecipes.length?`<span class="dinner-source-badge source-recipe">${selectedRecipes.length} Recipe${selectedRecipes.length>1?'s':''}</span>`:m.source==='url'&&m.url?'<span class="dinner-source-badge source-url">URL</span>':m.source==='manual'&&m.manualText?'<span class="dinner-source-badge source-manual">Manual</span>':'';
     return`<div class="dinner-card" id="dc-${i}">
       <div class="dinner-card-header" onclick="toggleCard(${i})">
         <span class="day-pill">${day}</span>
@@ -696,7 +609,6 @@ function buildDinnerCards(){
           <button class="source-tab${m.source==='recipe'?' active-recipe':''}" onclick="setSource(${i},'recipe',this)"><i class="ti ti-cards"></i> Recipe card</button>
           <button class="source-tab${m.source==='url'?' active-url':''}" onclick="setSource(${i},'url',this)"><i class="ti ti-link"></i> URL</button>
           <button class="source-tab${m.source==='manual'?' active-manual':''}" onclick="setSource(${i},'manual',this)"><i class="ti ti-pencil"></i> Manual</button>
-          <button class="source-tab${m.source==='ai'?' active-ai':''}" onclick="setSource(${i},'ai',this)"><i class="ti ti-sparkles"></i> AI</button>
         </div>
 
         <div class="source-panel${m.source==='recipe'?' active':''}" id="sp-recipe-${i}">
@@ -719,13 +631,10 @@ function buildDinnerCards(){
 
         <div class="source-panel${m.source==='url'?' active':''}" id="sp-url-${i}">
           <input type="text" id="meal-url-${i}" value="${esc(m.url)}" placeholder="https://www.allrecipes.com/recipe/…" oninput="updateUrl(${i},this.value)">
-          <p style="font-size:11px;color:var(--faint);margin-top:6px;line-height:1.5;">Falls back to AI if the page can't be read.</p>
+          <p style="font-size:11px;color:var(--faint);margin-top:6px;line-height:1.5;">Ingredients will be pulled from the recipe page.</p>
         </div>
         <div class="source-panel${m.source==='manual'?' active':''}" id="sp-manual-${i}">
           <textarea style="height:90px;" id="meal-manual-${i}" placeholder="One ingredient per line" oninput="updateManual(${i},this.value)">${esc(m.manualText)}</textarea>
-        </div>
-        <div class="source-panel${m.source==='ai'?' active':''}" id="sp-ai-${i}">
-          <p style="font-size:12px;color:var(--muted);line-height:1.6;padding:4px 0;">Claude will generate a typical ingredient list for this meal when you click <strong style="color:var(--text)">Build grocery draft</strong>.</p>
         </div>
       </div>
     </div>`;
@@ -783,7 +692,7 @@ function selectRecipe(i,recipeId){
 
 function removeRecipeFromSlot(i,recipeId){
   mealPlan[i].recipeIds=(mealPlan[i].recipeIds||[]).filter(id=>id!==recipeId);
-  if(mealPlan[i].recipeIds.length===0)mealPlan[i].source='ai';
+  if(mealPlan[i].recipeIds.length===0)mealPlan[i].source='manual';
   buildDinnerCards();
   setTimeout(()=>{const body=document.getElementById('db-'+i);const chev=document.getElementById('chev-'+i);const card=document.getElementById('dc-'+i);if(body&&!body.classList.contains('open')){body.classList.add('open');if(chev)chev.classList.add('open');if(card)card.classList.add('expanded');}},50);
 }
@@ -808,8 +717,8 @@ function setSource(i,src,btn){
   mealPlan[i].source=src;
   if(src!=='recipe')mealPlan[i].recipeIds=[];
   btn.closest('.source-tabs').querySelectorAll('.source-tab').forEach(t=>t.className='source-tab');
-  btn.classList.add(src==='recipe'?'active-recipe':src==='url'?'active-url':src==='manual'?'active-manual':'active-ai');
-  ['recipe','url','manual','ai'].forEach(s=>{const p=document.getElementById(`sp-${s}-${i}`);if(p)p.classList.toggle('active',s===src);});
+  btn.classList.add(src==='recipe'?'active-recipe':src==='url'?'active-url':'active-manual');
+  ['recipe','url','manual'].forEach(s=>{const p=document.getElementById(`sp-${s}-${i}`);if(p)p.classList.toggle('active',s===src);});
 }
 
 async function saveMealPlan(){
@@ -819,7 +728,7 @@ async function saveMealPlan(){
   });
   await saveMealPlanToDb();showToast('Menu saved ✓');
 }
-function clearMealPlan(){mealPlan=DAYS.map(()=>({name:'',source:'ai',url:'',manualText:'',recipeIds:[]}));buildDinnerCards();document.getElementById('draft-panel').style.display='none';}
+function clearMealPlan(){mealPlan=DAYS.map(()=>({name:'',source:'manual',url:'',manualText:'',recipeIds:[]}));buildDinnerCards();document.getElementById('draft-panel').style.display='none';}
 
 // ── CLAUDE ──
 async function callClaude(messages,useWebSearch=false){
@@ -855,26 +764,16 @@ async function generateDraft(){
           const text=await callClaude([{role:'user',content:`Fetch this recipe page and extract only the ingredient list: ${m.url}\nReturn ONLY a plain list, one ingredient per line, generic names, no quantities. If you cannot access the page return FAILED.`}],true);
           if(!text||text==='FAILED'||text.length<10)throw new Error('failed');
           items=text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(s=>s.length>1&&s!=='FAILED').map(s=>({qty:'',name:s}));method='url';
-        }catch(e){items=(await aiIngredients(m.name)).map(s=>({qty:'',name:s}));method='ai-fallback';}
-      } else {
-        dc.innerHTML=`<div class="generating-state"><i class="ti ti-loader"></i> Generating ingredients for ${esc(m.name)}…</div>`;
-        items=(await aiIngredients(m.name)).map(s=>({qty:'',name:s}));method='ai';
+        }catch(e){showToast(`Could not fetch recipe for ${m.name} — check the URL`);continue;}
       }
     }
-    const badge=method==='recipe'||method.includes('recipe cards')?`<span class="dinner-source-badge source-recipe" style="font-size:10px;">${method==='recipe'?'Recipe Card':esc(method)}</span>`:method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='ai-fallback'?'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI fallback</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'<span class="dinner-source-badge source-ai" style="font-size:10px;">AI</span>';
+    const badge=method==='recipe'||method.includes('recipe cards')?`<span class="dinner-source-badge source-recipe" style="font-size:10px;">${method==='recipe'?'Recipe Card':esc(method)}</span>`:method==='url'?'<span class="dinner-source-badge source-url" style="font-size:10px;">URL</span>':method==='manual'?'<span class="dinner-source-badge source-manual" style="font-size:10px;">Manual</span>':'';
     allItems.push(...items);
     html+=`<div class="draft-meal-header">${esc(day)} · ${esc(m.name)} ${badge}</div>${items.map(it=>`<span>${esc(ingLine(it))}</span><br>`).join('')}`;
   }
   pendingDraftObjects=allItems;
   pendingDraft=allItems.map(it=>ingLine(it));
   dc.innerHTML=`<div class="draft-preview">${html}</div><p style="font-size:12px;color:var(--muted);margin-top:8px;">${allItems.length} ingredients across all meals. Duplicates are combined and totaled when sent to the shopper.</p>`;
-}
-
-async function aiIngredients(mealName){
-  try{
-    const text=await callClaude([{role:'user',content:`List typical grocery store ingredients for: ${mealName}\nOne per line, generic names, no brands, no quantities, omit basic pantry staples. Return ONLY the list.`}]);
-    return text.split('\n').map(s=>s.replace(/^[-•*\d.]+\s*/,'').trim()).filter(Boolean);
-  }catch(e){return[];}
 }
 
 // ── QUANTITY CONSOLIDATION ──
@@ -984,28 +883,6 @@ function sortList(){
 function clearList(){document.getElementById('list-input').value='';document.getElementById('sorted-output').innerHTML='<p class="empty-state">Enter items and sort</p>';}
 
 // ── COUPONS ──
-async function scanCoupon(input){
-  if(!input.files||!input.files[0])return;
-  const file=input.files[0];
-  const sEl=document.getElementById('scan-status'),cEl=document.getElementById('scan-confirm');
-  cEl.style.display='none';sEl.innerHTML='<div class="scanning-state"><i class="ti ti-loader"></i> Reading coupon…</div>';
-  try{
-    const b64=await fileToBase64(file);
-    const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:file.type||'image/jpeg',data:b64}},{type:'text',text:`Read this physical grocery coupon. Return ONLY valid JSON, no markdown:\n{"item":"generic item name","brand":"brand or empty string","discount":"as shown e.g. $1.00 off","expiry":"YYYY-MM-DD or empty string"}\nIf not a coupon: {"error":"not a coupon"}`}]}]})});
-    const data=await resp.json();
-    const text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    if(parsed.error){sEl.innerHTML=`<div class="error-state">${esc(parsed.error)} — please try another photo.</div>`;return;}
-    pendingCoupon=parsed;
-    sEl.innerHTML=`<div class="scan-result"><div class="scan-field"><span class="scan-key">item</span><span class="scan-val">${esc(parsed.item)}</span></div>${parsed.brand?`<div class="scan-field"><span class="scan-key">brand</span><span class="scan-val">${esc(parsed.brand)}</span></div>`:''}<div class="scan-field"><span class="scan-key">discount</span><span class="scan-val">${esc(parsed.discount)}</span></div>${parsed.expiry?`<div class="scan-field"><span class="scan-key">expires</span><span class="scan-val">${esc(parsed.expiry)}</span></div>`:''}</div>`;
-    cEl.style.display='flex';
-  }catch(e){sEl.innerHTML='<div class="error-state">Could not read the coupon. Please try a clearer photo.</div>';}
-  input.value='';
-}
-async function confirmCoupon(){
-  if(!pendingCoupon)return;const c={...pendingCoupon,id:Date.now()};coupons.push(c);await saveCouponToDb(c);pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';renderCoupons();updateCouponCount();
-}
-function dismissScan(){pendingCoupon=null;document.getElementById('scan-status').innerHTML='';document.getElementById('scan-confirm').style.display='none';}
 async function deleteCoupon(id){
   const c=coupons.find(x=>x.id===id);
   if(c){const tb={item:c.item,brand:c.brand||'',discount:c.discount,expiry:c.expiry||'',deletedOn:todayStr(),id:Date.now(),manualDelete:true};tombstones.push(tb);await saveTombstoneToDb(tb);}
@@ -1143,19 +1020,6 @@ async function resetAisleMap(){
   showToast('Aisle map reset to defaults ✓');
 }
 
-function showCouponEntry(mode){
-  document.getElementById('coupon-photo-entry').style.display=mode==='photo'?'block':'none';
-  document.getElementById('coupon-manual-entry').style.display=mode==='manual'?'block':'none';
-  document.getElementById('btn-photo-coupon').className=mode==='photo'?'btn btn-primary':'btn';
-  document.getElementById('btn-manual-coupon').className=mode==='manual'?'btn btn-primary':'btn';
-  if(mode==='manual'){
-    document.getElementById('manual-coupon-brand').value='';
-    document.getElementById('manual-coupon-item').value='';
-    document.getElementById('manual-coupon-discount').value='';
-    document.getElementById('manual-coupon-expiry').value='';
-    setTimeout(()=>document.getElementById('manual-coupon-brand').focus(),50);
-  }
-}
 async function saveManualCoupon(){
   const brand=document.getElementById('manual-coupon-brand').value.trim();
   const item=document.getElementById('manual-coupon-item').value.trim();
@@ -1165,7 +1029,11 @@ async function saveManualCoupon(){
   if(!discount){showToast('Discount amount is required');return;}
   const c={id:Date.now(),item,brand,discount,expiry};
   coupons.push(c);await saveCouponToDb(c);
-  showCouponEntry('photo');renderCoupons();updateCouponCount();
+  document.getElementById('manual-coupon-brand').value='';
+  document.getElementById('manual-coupon-item').value='';
+  document.getElementById('manual-coupon-discount').value='';
+  document.getElementById('manual-coupon-expiry').value='';
+  renderCoupons();updateCouponCount();
   showToast('Coupon saved ✓');
 }
 function showToast(msg){
